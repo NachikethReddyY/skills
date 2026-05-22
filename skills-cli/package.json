@@ -1,6 +1,6 @@
 {
   "name": "nachikethreddyy-skills",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI tool for installing and managing reusable agent skills",
   "type": "module",
   "main": "lib/index.js",

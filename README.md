@@ -12,7 +12,7 @@ Unlike prompt dumps, skills are **procedural** — they guide agents through pro
 npx nachikethreddyy-skills@latest add NachikethReddyY/skills
 ```
 
-This installs to `~/.claude/skills/NachikethReddyY-skills/` and makes all skills available in Claude Code automatically.
+This installs to `~/.agents/skills/NachikethReddyY-skills/` and makes all skills available in any agent (Claude Code, Hermes, Pi, etc.) automatically.
 
 ### Manual
 
@@ -64,6 +64,8 @@ That's it. Skills auto-discover and work immediately.
 ### For Users
 
 1. **Install**: `npx nachikethreddyy-skills@latest add NachikethReddyY/skills`
+   - Installs to `~/.agents/skills/`
+   - Works with any agent (Claude Code, Hermes, Pi, Codex, etc.)
 2. **Configure**: `/setup-your-skills` (project-specific config)
 3. **Use**: `/skill-name` to invoke any skill
 4. **Update**: `nachikethreddyy-skills update` to pull latest
@@ -227,7 +229,7 @@ Contributions welcome. To propose a new skill:
 ## FAQ
 
 **Q: How do agents discover skills?**
-A: Claude Code automatically scans `~/.claude/skills/` for `SKILL.md` files and makes them available as `/command`.
+A: All agents automatically scan `~/.agents/skills/` for `SKILL.md` files and make them available as `/command`. Works with Claude Code, Hermes, Pi, Codex, and any agent that supports the `.agents` directory.
 
 **Q: Can I use these with other agents?**
 A: Yes. Skills are format-agnostic. Any agent that understands SKILL.md can implement them. The `portable: true` flag indicates which skills are designed for this.

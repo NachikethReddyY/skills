@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import readline from 'readline';
 
 export async function remove(name, options = {}) {
-  const skillsDir = join(homedir(), '.claude', 'skills');
+  const skillsDir = join(homedir(), '.agents', 'skills');
   const targetPath = join(skillsDir, name);
 
   if (!existsSync(targetPath)) {

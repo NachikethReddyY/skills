@@ -24,7 +24,7 @@ npx skills@latest add username/skills
 skills add username/skills
 ```
 
-This clones the repository and installs it to `~/.claude/skills/username-skills/`.
+This clones the repository and installs it to `~/.agents/skills/username-skills/`.
 
 Accepts multiple formats:
 - `username/skills` (GitHub shorthand)
@@ -76,7 +76,7 @@ Options:
 Skills are installed to:
 
 ```
-~/.claude/skills/
+~/.agents/skills/
 ├── username-skills/
 │   ├── skills/
 │   │   ├── productivity/

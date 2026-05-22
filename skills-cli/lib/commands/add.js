@@ -7,7 +7,7 @@ import { normalizeRepo, ensureSkillsDir } from '../utils.js';
 
 export async function add(repo, options = {}) {
   const normalized = normalizeRepo(repo);
-  const skillsDir = options.dir ? join(options.dir) : join(homedir(), '.claude', 'skills');
+  const skillsDir = options.dir ? join(options.dir) : join(homedir(), '.agents', 'skills');
   const installName = basename(normalized.path);
   const targetPath = join(skillsDir, installName);
 

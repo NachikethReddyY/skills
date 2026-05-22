@@ -5,7 +5,7 @@ import { join } from 'path';
 import chalk from 'chalk';
 
 export async function update(name) {
-  const skillsDir = join(homedir(), '.claude', 'skills');
+  const skillsDir = join(homedir(), '.agents', 'skills');
 
   try {
     const repos = readdirSync(skillsDir);
