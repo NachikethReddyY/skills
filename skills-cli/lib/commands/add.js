@@ -96,5 +96,3 @@ function countSkills(skillsDir) {
     return 0;
   }
 }
-
-import { dirname } from 'path';
