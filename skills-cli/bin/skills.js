@@ -15,9 +15,15 @@ program
 
 program
   .command('add <repo>')
-  .description('Install a skills repository (e.g., username/skills or https://github.com/username/skills)')
-  .option('-d, --dir <path>', 'Custom installation directory (default: ~/.claude/skills/)')
+  .description('Install a skills repository to one or more agents')
+  .option('-d, --dir <path>', 'Custom installation directory')
   .option('-f, --force', 'Overwrite existing installation')
+  .option('-a, --all', 'Install to all possible agents')
+  .option('--claude', 'Install to Claude Code')
+  .option('--hermes', 'Install to Hermes')
+  .option('--pi', 'Install to Pi')
+  .option('--codex', 'Install to Codex')
+  .option('--agents', 'Install to generic .agents directory')
   .action(async (repo, options) => {
     try {
       await add(repo, options);
