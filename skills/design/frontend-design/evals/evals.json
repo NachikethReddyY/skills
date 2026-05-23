@@ -1,0 +1,30 @@
+{
+  "skill_name": "frontend-design",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build me a landing page for a luxury watch brand",
+      "expected_output": "A distinctive landing page with refined typography, elegant color palette, and sophisticated layout - NOT using generic AI aesthetics."
+    },
+    {
+      "id": 2,
+      "prompt": "Create a React component for a music player",
+      "expected_output": "A functional music player component with a bold aesthetic choice (brutalist, retro-futuristic, or minimalist) and unique typography."
+    },
+    {
+      "id": 3,
+      "prompt": "Design a portfolio website for a designer",
+      "expected_output": "A visually striking portfolio with unconventional layout, distinctive fonts, and memorable design elements that avoid cookie-cutter patterns."
+    },
+    {
+      "id": 4,
+      "prompt": "Make me a simple CSS button",
+      "expected_output": "A creative button with intentional styling - NOT a generic bootstrap-style button. Should show character through hover effects, typography, or visual details."
+    },
+    {
+      "id": 5,
+      "prompt": "Write a Python API endpoint",
+      "expected_output": "Should NOT trigger this skill. This is backend work without UI design needs."
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "skill_name": "preflight",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Change the button color from blue to red on the landing page",
+      "type": "simple_tweak",
+      "expected_decision": "auto_approve",
+      "expected_reason": "This is a simple visual tweak. All agents should have >= 8/10 confidence and low risk.",
+      "design_scope": "tweak",
+      "risk_check": "No security, architecture, or test concerns"
+    },
+    {
+      "id": 2,
+      "prompt": "Reposition the login button to be centered instead of right-aligned",
+      "type": "simple_tweak",
+      "expected_decision": "auto_approve",
+      "expected_reason": "Positioning change only. No logic changes.",
+      "design_scope": "tweak",
+      "risk_check": "No infrastructure or security changes"
+    },
+    {
+      "id": 3,
+      "prompt": "Build me a login page with email/password authentication, forgot password flow, and remember me option",
+      "type": "new_feature",
+      "expected_decision": "human_in_loop",
+      "expected_reason": "Whole new page with auth logic. Security agent should flag medium/high risk.",
+      "design_scope": "page",
+      "risk_check": "Security: auth boundaries, input validation; Eng: new infrastructure"
+    },
+    {
+      "id": 4,
+      "prompt": "Add payment processing with Stripe. Create checkout page, webhook handler, and payment history page.",
+      "type": "security_sensitive",
+      "expected_decision": "human_in_loop",
+      "expected_reason": "Payment processing = high risk by definition. Security agent MUST flag high risk.",
+      "design_scope": "multiple_pages",
+      "risk_check": "Security: payment handling, webhook security, PII; Eng: new services"
+    },
+    {
+      "id": 5,
+      "prompt": "Review this auth middleware code:\n\nfunction checkAuth(req, res, next) {\n  if (req.query.user_id) {\n    req.user = { id: req.query.user_id };\n    return next();\n  }\n  return res.status(401).send('Unauthorized');\n}",
+      "type": "code_review",
+      "expected_decision": "human_in_loop",
+      "expected_reason": "Security vulnerability: user_id in query string can be tampered. Security agent should find this.",
+      "design_scope": "code_change",
+      "risk_check": "Security: auth bypass vulnerability; Eng: architectural issue"
+    },
+    {
+      "id": 6,
+      "prompt": "I want to understand what users are doing on my site. Add analytics: page views, button clicks, time on page, and a dashboard to view the data.",
+      "type": "new_feature",
+      "expected_decision": "human_in_loop",
+      "expected_reason": "Whole new system with dashboard page, data model, and tracking infrastructure.",
+      "design_scope": "system + page",
+      "risk_check": "Eng: new infrastructure, data model; QA: new test paths"
+    },
+    {
+      "id": 7,
+      "prompt": "Fix the typo on the pricing page: '99$ per month' should be '$99 per month'",
+      "type": "text_fix",
+      "expected_decision": "auto_approve",
+      "expected_reason": "Text correction only. No logic, styling, or infrastructure changes.",
+      "design_scope": "text_only",
+      "risk_check": "None. This should pass all 4 reviews with 10/10 confidence."
+    }
+  ]
+}
