@@ -33,6 +33,8 @@ Once installed, skills are available as `/command` in Claude Code:
 /handoff build login flow    # Create handoff for subtask
 /caveman ultra               # Ultra-terse mode (~75% token savings)
 /skill-creator               # Build new skills
+/preflight                   # Validate with 4 parallel agent reviews
+/frontend-design             # Build distinctive non-generic UI
 ```
 
 That's it. Skills auto-discover and work immediately.
@@ -58,6 +60,13 @@ That's it. Skills auto-discover and work immediately.
 | Skill | Purpose |
 |-------|---------|
 | **[skill-creator](skills/engineering/skill-creator/SKILL.md)** | Create new skills following the standard SKILL.md format. |
+| **[preflight](skills/engineering/preflight/SKILL.md)** | 4 parallel agent reviews before implementation. Auto-approve or human-in-the-loop. |
+
+### Design
+
+| Skill | Purpose |
+|-------|---------|
+| **[frontend-design](skills/design/frontend-design/SKILL.md)** | Build distinctive, non-generic frontend interfaces with exceptional design quality. |
 
 ## How It Works
 
@@ -145,7 +154,12 @@ skills/
 │   ├── handoff/
 │   └── caveman/
 ├── engineering/                    # Development procedures
-│   └── skill-creator/
+│   ├── skill-creator/
+│   └── preflight/
+│       ├── SKILL.md
+│       └── agents/                 # Agent role definitions
+├── design/                         # Design & UI
+│   └── frontend-design/
 └── docs/
     ├── CONTEXT.md                  # Project domain language
     └── adr/                        # Architectural decisions
@@ -186,13 +200,17 @@ Then update the README's skill table.
 
 ## Roadmap
 
-**Engineering** (in progress):
+**Recently Added:**
+- `preflight` — 4 parallel agent reviews before implementation
+- `frontend-design` — build distinctive, non-generic frontend interfaces
+
+**Engineering** (planned):
 - `tdd` — red-green-refactor loop for reliable feature development
 - `diagnose` — systematic debugging workflow for hard bugs
 - `triage` — classify issues through decision trees
 - `improve-architecture` — find deepening opportunities in codebases
 
-**Productivity** (in progress):
+**Productivity** (planned):
 - `grill-with-docs` — grilling + domain language capture + ADR documentation
 - `to-prd` — turn conversations into product requirements documents
 - `to-issues` — break plans into vertical slices for GitHub
@@ -200,6 +218,7 @@ Then update the README's skill table.
 **Project** (planned):
 - `zoom-out` — explain code in broader system context
 - `prototype` — throwaway prototypes for design validation
+- Memory system integration — tie preflight to your upcoming memory system
 
 ## Using in Custom Harnesses
 
