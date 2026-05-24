@@ -10,9 +10,11 @@ export function detectAgents() {
   const homeDir = homedir();
   const possibleAgents = [
     { name: 'Claude Code', dir: '.claude', description: 'Claude Code (official)' },
+    { name: 'Cursor', dir: '.cursor', description: 'Cursor editor' },
     { name: 'Hermes', dir: '.hermes', description: 'Hermes agent' },
     { name: 'Pi', dir: '.pi', description: 'Pi agent' },
     { name: 'Codex', dir: '.codex', description: 'Codex agent' },
+    { name: 'OpenCode', dir: '.opencode', description: 'OpenCode agent' },
     { name: 'Generic', dir: '.agents', description: 'Generic agents directory' }
   ];
 
@@ -39,9 +41,11 @@ export async function selectAgents(options = {}) {
   const homeDir = homedir();
   const allAgents = [
     { name: 'Claude Code', dir: '.claude', path: join(homeDir, '.claude') },
+    { name: 'Cursor', dir: '.cursor', path: join(homeDir, '.cursor') },
     { name: 'Hermes', dir: '.hermes', path: join(homeDir, '.hermes') },
     { name: 'Pi', dir: '.pi', path: join(homeDir, '.pi') },
     { name: 'Codex', dir: '.codex', path: join(homeDir, '.codex') },
+    { name: 'OpenCode', dir: '.opencode', path: join(homeDir, '.opencode') },
     { name: 'Generic', dir: '.agents', path: join(homeDir, '.agents') }
   ];
 
@@ -49,9 +53,11 @@ export async function selectAgents(options = {}) {
   const requestedAgents = [];
   const flagMap = {
     claude: 'Claude Code',
+    cursor: 'Cursor',
     hermes: 'Hermes',
     pi: 'Pi',
     codex: 'Codex',
+    opencode: 'OpenCode',
     agents: 'Generic'
   };
 

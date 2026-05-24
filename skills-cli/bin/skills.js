@@ -20,9 +20,11 @@ program
   .option('-f, --force', 'Overwrite existing installation')
   .option('-a, --all', 'Install to all possible agents')
   .option('--claude', 'Install to Claude Code')
+  .option('--cursor', 'Install to Cursor')
   .option('--hermes', 'Install to Hermes')
   .option('--pi', 'Install to Pi')
   .option('--codex', 'Install to Codex')
+  .option('--opencode', 'Install to OpenCode')
   .option('--agents', 'Install to generic .agents directory')
   .action(async (repo, options) => {
     try {
