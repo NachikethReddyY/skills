@@ -1,7 +1,7 @@
 ---
 name: preflight
-description: Orchestrate parallel AI agent reviews for plan validation before implementation. Use this skill when the user wants to validate an idea, code change, or design through structured multi-agent review. Triggers: "preflight", "review this", "should I build this", "validate this plan", "check this architecture", "run reviews".
-version: 0.1.0
+description: Lock nine foundation decisions (schema, types, validation, routing, auth, CSS, UI, client-server, folders) through structured Q&A, then orchestrate parallel AI agent reviews before implementation. Use when validating ideas, plans, or architecture. Triggers: "preflight", "review this", "should I build this", "validate this plan", "check this architecture", "run reviews", "plan before building".
+version: 0.2.0
 category: engineering
 portable: true
 status: draft
@@ -11,10 +11,12 @@ status: draft
 
 ## Purpose
 
-Orchestrate 4 parallel AI agents to review plans, code changes, and designs. Each agent produces structured JSON output. The orchestrator synthesizes outputs and decides:
+Two phases before implementation:
 
-- **Auto-approve**: All agents >= 8/10 confidence AND no high risk
-- **Human-in-the-loop**: Otherwise
+1. **Foundation discovery** — Walk through nine architectural decisions with the user using a consistent ask → research → options → pros/cons → choose loop.
+2. **Multi-agent review** — Orchestrate 4 parallel AI agents to review the resulting plan. Each agent produces structured JSON output. The orchestrator synthesizes outputs and decides:
+   - **Auto-approve**: All agents >= 8/10 confidence AND no high risk
+   - **Human-in-the-loop**: Otherwise
 
 ## Agent Descriptions
 
@@ -32,6 +34,7 @@ Each agent has a dedicated role file. Read these before orchestration:
 
 Use this skill when:
 - User describes an idea to implement ("build me a login page")
+- User wants to lock stack decisions before coding (schema, auth, routing, etc.)
 - User wants code reviewed ("check this architecture")
 - User asks for validation ("what do you think about this approach?")
 - User says "preflight", "review this", or "should I build this?"
@@ -47,25 +50,98 @@ Accepts three input types:
 
 | Type | Description | Handling |
 |------|-------------|----------|
-| **A** | Markdown plan file | Review directly |
-| **B** | Chat description ("build me X") | First generate structured plan |
-| **C** | Existing code/diff | Review directly |
+| **A** | Markdown plan file | Run foundation pass on gaps, then review |
+| **B** | Chat description ("build me X") | Foundation discovery → generate plan |
+| **C** | Existing code/diff | Infer foundations from code; confirm gaps with user, then review |
+
+## Foundation Decision Loop
+
+Use this loop for **each** of the nine foundation areas (and for any open question during discovery):
+
+```
+1. ASK     — Ask the user what they want or already decided.
+2. RESEARCH — If they don't know (or say "you decide"), research:
+              - Read the codebase (package.json, existing patterns, folder layout)
+              - Web search for stack-appropriate defaults when the repo is greenfield
+3. OPTIONS — If nothing is specified, return 2–4 concrete options (not vague categories).
+4. PROS/CONS — For each option, list brief pros and cons tied to this project.
+5. CHOOSE  — Ask which option to use. Do not proceed on assumptions.
+```
+
+**Rules:**
+- Do not skip areas because the user "seems in a hurry" — at minimum confirm existing project defaults.
+- If the user already stated a choice in chat, confirm it once, record it, move on.
+- Batch questions when areas are independent, but still get explicit confirmation per area.
+- Record every locked decision in the plan's `## Foundations` section before reviews.
+
+**Nine foundation areas** (details in `references/foundations.md`):
+
+| # | Area | Core question |
+|---|------|----------------|
+| 1 | Database Schema | Data relationships and ownership — planned manually before table generation |
+| 2 | TypeScript Types | Shared data shapes and API interfaces across client/server |
+| 3 | Validation Strategy | Single validation approach (e.g. Zod, Standard Schema–compliant) |
+| 4 | Routing Structure | Route outline: public, private, admin |
+| 5 | Auth Flow | Authentication and access control (early — ties to schema ownership) |
+| 6 | CSS Methodology | Styling rules (Tailwind, modules, naming) — one consistent approach |
+| 7 | UI Framework | Component system to reuse (avoid redundant primitives) |
+| 8 | Client–Server Communication | Primary pattern: REST, RPC, Server Components, etc. — no mixing |
+| 9 | Folder Structure | Where routes, components, hooks, and utils live |
+
+Read `references/foundations.md` when running Phase 0 for per-area prompts and comparison dimensions.
 
 ## Workflow
 
-### Phase 0: Input Classification & Prep
+### Phase 0: Foundation Discovery
+
+Run **before** multi-agent review for all input types.
 
 ```
-IF input is Type B (chat description):
+FOR each foundation area (1–9):
+   1. Apply the Foundation Decision Loop
+   2. Record: decision, rationale, rejected alternatives
+
+IF input is Type A and plan already has ## Foundations:
+   - Verify completeness; only loop on missing or contradictory items
+
+IF input is Type C (existing code):
+   - Infer decisions from codebase first
+   - Present inferences to user: "I see X — confirm or change?"
+   - Loop only on gaps or conflicts
+
+WHEN all nine areas are locked:
+   Proceed to Phase 1
+```
+
+**Output of Phase 0:** A `## Foundations` section (append to existing plan or hold in chat) listing all nine decisions. Example:
+
+```markdown
+## Foundations
+
+| Area | Decision | Notes |
+|------|----------|-------|
+| Database Schema | ... | ER sketch or link |
+| TypeScript Types | ... | |
+| ... | ... | |
+```
+
+### Phase 1: Input Classification & Plan Prep
+
+```
+IF input is Type B (chat description) OR foundations were just completed:
    1. Generate structured plan document
    2. Include: goal, components, approach, tradeoffs
-   3. Proceed to Phase 1 with this plan
+   3. Include: ## Foundations (from Phase 0)
+   4. Proceed to Phase 2 with this plan
 
-ELSE:
-   Proceed directly to Phase 1
+IF input is Type A with complete foundations:
+   Proceed to Phase 2
+
+IF input is Type C:
+   Attach ## Foundations + code context; proceed to Phase 2
 ```
 
-### Phase 1: Load Agent Definitions
+### Phase 2: Load Agent Definitions
 
 **Read all 5 agent description files** using the Read tool:
 
@@ -84,12 +160,12 @@ These files define:
 - Scoring rules
 - Risk determination rules
 
-### Phase 2: Parallel Agent Reviews
+### Phase 3: Parallel Agent Reviews
 
 Spin up **4 agents simultaneously** using the Task tool. Pass each agent:
-1. The plan/code to review
+1. The full plan/code to review (must include `## Foundations` from Phase 0)
 2. Their agent description (from the files you read)
-3. Instruction: "Output ONLY valid JSON matching your schema."
+3. Instruction: "Output ONLY valid JSON matching your schema. Flag conflicts between the plan and locked foundation decisions."
 
 **Agents run in parallel, NOT sequentially.**
 
@@ -170,7 +246,7 @@ IMPORTANT CRITICAL RULES:
 - Any vulnerability = confidence caps at 4, risk="high"
 ```
 
-### Phase 3: Orchestrator Synthesis
+### Phase 4: Orchestrator Synthesis
 
 Collect all 4 JSON outputs from the parallel agents.
 
@@ -201,7 +277,7 @@ ELSE:
 | High risk blocks auto-approve | Always |
 | Block recommendation blocks auto-approve | Always |
 
-### Phase 4: Persist Output
+### Phase 5: Persist Output
 
 Write orchestrator JSON to disk:
 
@@ -211,7 +287,7 @@ TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 echo "<orchestrator-json>" > ~/.temp/preflight-$TIMESTAMP.json
 ```
 
-### Phase 5: Present to User
+### Phase 6: Present to User
 
 #### If decision = "auto_approve"
 
@@ -272,6 +348,9 @@ Then ask what to do next:
 ## Quality Bar
 
 The skill works correctly if:
+- All nine foundation areas are addressed with the ask → research → options → pros/cons → choose loop
+- User explicitly confirms each foundation decision (no silent defaults)
+- Plan includes a complete `## Foundations` section before agent reviews
 - All 4 agent descriptions are read from files
 - All 4 agents run in parallel via Task tool
 - Each outputs valid JSON with all required fields
@@ -284,7 +363,10 @@ The skill works correctly if:
 ## Failure Modes
 
 Avoid:
-- Sequential execution (must be parallel)
+- Skipping foundation discovery and jumping straight to parallel reviews
+- Auto-picking stack choices without user confirmation
+- Mixing pros/cons into walls of text — keep each option scannable
+- Sequential execution of review agents (must be parallel)
 - Not reading agent files (hardcoding roles inline)
 - Incorrect decision logic (e.g., auto-approving when security flags high risk)
 - Rounding confidence up (7.9 stays 7, not 8)
