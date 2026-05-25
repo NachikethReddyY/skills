@@ -51,7 +51,7 @@ That's it. Skills auto-discover and work immediately.
 
 | Skill | Purpose |
 |-------|---------|
-| **[grill-me](skills/productivity/grill-me/SKILL.md)** | Get interviewed relentlessly about your plan until every decision is aligned. |
+| **[grill-me](skills/productivity/grill-me/SKILL.md)** | Batch-interview about your plan (5–12 questions per round, voice-friendly) until every decision is aligned. |
 | **[handoff](skills/productivity/handoff/SKILL.md)** | Create handoff documents for spinning subtasks off to separate agent sessions. |
 | **[caveman](skills/productivity/caveman/SKILL.md)** | Ultra-compressed communication mode. Cuts ~75% tokens while keeping full technical accuracy. Supports 6 intensity levels. |
 
