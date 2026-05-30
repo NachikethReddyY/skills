@@ -1,10 +1,9 @@
 ---
 name: preflight
-description: Lock nine foundation decisions (schema, types, validation, routing, auth, CSS, UI, client-server, folders) through structured Q&A, then orchestrate parallel AI agent reviews before implementation. Use when validating ideas, plans, or architecture. Triggers: "preflight", "review this", "should I build this", "validate this plan", "check this architecture", "run reviews", "plan before building".
+description: "Lock nine foundation decisions (schema, types, validation, routing, auth, CSS, UI, client-server, folders) through structured Q&A, then orchestrate parallel AI agent reviews before implementation. Use when validating ideas, plans, or architecture. Triggers: \"preflight\", \"review this\", \"should I build this\", \"validate this plan\", \"check this architecture\", \"run reviews\", \"plan before building\"."
 version: 0.2.0
 category: engineering
 portable: true
-status: draft
 ---
 
 # Preflight

@@ -1,19 +1,19 @@
 # skills-cli
 
-CLI tool for installing and managing reusable agent skills.
+CLI tool for installing and managing reusable agent skills across multiple AI coding agents.
 
-Simplifies skill repository management across different agents (Claude Code, Hermes, OpenCode, etc.).
+Simplifies skill repository management across different agents (Claude Code, Cursor, Hermes, Pi, Codex, OpenCode, etc.).
 
 ## Installation
 
 ```bash
-npm install -g skills
+npm install -g nachikethreddyy-skills
 ```
 
 Or use with `npx`:
 
 ```bash
-npx skills@latest add username/skills
+npx nachikethreddyy-skills@latest add username/skills
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ npx skills@latest add username/skills
 skills add username/skills
 ```
 
-This clones the repository and installs it to `~/.agents/skills/username-skills/`.
+Clones the repository into `~/.cache/skills-cli/` and creates a symlink in the selected agent's `skills/` directory.
 
 Accepts multiple formats:
 - `username/skills` (GitHub shorthand)
@@ -32,8 +32,18 @@ Accepts multiple formats:
 - `git@github.com:username/skills.git` (SSH URL)
 
 Options:
-- `-d, --dir <path>` — Custom installation directory
+- `-d, --dir <path>` — Custom installation directory (skips agent selection)
 - `-f, --force` — Overwrite existing installation
+- `-a, --all` — Install to all known agents
+- `--claude` — Install to Claude Code
+- `--cursor` — Install to Cursor
+- `--hermes` — Install to Hermes
+- `--pi` — Install to Pi
+- `--codex` — Install to Codex
+- `--opencode` — Install to OpenCode
+- `--agents` — Install to generic `~/.agents` directory
+
+If no flags are specified, you'll be prompted interactively to select agents.
 
 ### List Installed Skills
 
@@ -41,7 +51,7 @@ Options:
 skills list
 ```
 
-Shows all installed skill repositories and counts available skills.
+Shows all installed skill repositories from `~/.agents/skills/` with per-repo skill counts and available skill names.
 
 ### Update Skills
 
@@ -55,6 +65,8 @@ Update all installed skills:
 skills update
 ```
 
+Pulls latest changes via `git pull` on the cloned repository.
+
 ### Remove Skills
 
 ```bash
@@ -66,30 +78,23 @@ Options:
 
 ## How It Works
 
-1. **Clone**: Downloads the skills repository from GitHub
-2. **Symlink**: Creates a symlink at `~/.claude/skills/[name]/`
-3. **Discover**: Claude Code automatically discovers all `SKILL.md` files
-4. **Update**: Run `skills update` to pull latest changes
+1. **Clone**: Downloads the skills repository to `~/.cache/skills-cli/[name]/`
+2. **Select**: Prompts you to choose which agent(s) to install to (or uses flags)
+3. **Symlink**: Creates a symlink at each agent's `skills/` directory pointing to the cache
+4. **Discover**: Each agent automatically discovers `SKILL.md` files in its `skills/` directory
+5. **Update**: Run `skills update` to `git pull` latest changes
 
-## Directory Structure
+## Supported Agents
 
-Skills are installed to:
-
-```
-~/.agents/skills/
-├── username-skills/
-│   ├── skills/
-│   │   ├── productivity/
-│   │   │   └── grill-me/
-│   │   │       └── SKILL.md
-│   │   └── engineering/
-│   │       └── skill-creator/
-│   │           └── SKILL.md
-│   └── README.md
-└── another-skills/
-```
-
-Claude Code automatically detects all `SKILL.md` files and makes them available as `/command` invocations.
+| Agent | Directory | Flag |
+|---|---|---|
+| Claude Code | `~/.claude/skills/` | `--claude` |
+| Cursor | `~/.cursor/skills/` | `--cursor` |
+| Hermes | `~/.hermes/skills/` | `--hermes` |
+| Pi | `~/.pi/skills/` | `--pi` |
+| Codex | `~/.codex/skills/` | `--codex` |
+| OpenCode | `~/.opencode/skills/` | `--opencode` |
+| Generic | `~/.agents/skills/` | `--agents` |
 
 ## Publishing Your Skills
 
@@ -101,11 +106,14 @@ Claude Code automatically detects all `SKILL.md` files and makes them available 
 ## Examples
 
 ```bash
-# Install Matt Pocock's skills (when published)
-npx skills@latest add mattpocock/skills
+# Install to specific agents
+skills add nachikethreddyy/skills --claude --opencode
 
-# Install your custom skills
-npx skills@latest add yourname/skills
+# Install to all agents
+skills add yourname/skills --all
+
+# Interactive agent selection
+skills add yourname/skills
 
 # Update all
 skills update
@@ -116,12 +124,6 @@ skills list
 # Remove specific repo
 skills remove yourname-skills
 ```
-
-## Configuration
-
-Skills are automatically discovered by Claude Code from `~/.claude/skills/`.
-
-Each skills repo should have a `/setup-[name]` skill that configures project-specific settings (issue tracker, docs location, etc.).
 
 ## License
 
