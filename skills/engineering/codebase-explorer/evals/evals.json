@@ -1,28 +1,29 @@
 {
   "skill_name": "codebase-explorer",
+  "version": "2.0.0",
   "evals": [
     {
       "id": 1,
-      "prompt": "Explore this codebase at /Users/me/project and tell me how it works. I just joined the team and need to understand the architecture. Generate all the exploration docs.",
-      "expected_output": "A full set of exploration docs (discover.md, architecture.md, glossary.md, onboarding.md, diagrams/) plus exploration-report.html, all written to project/docs/exploration/. Includes directory tree, request flow trace, entity map, and learning path.",
+      "prompt": "Explore this codebase at /Users/me/project and build an interactive graph. I need to understand how files depend on each other.",
+      "expected_output": "An exploration-report.html with a Cytoscape.js interactive graph. Nodes represent actual files with real import/export relationships. Hovering highlights connected files. Clicking opens a detail panel showing imports, exports, key functions, and dependents. Search filters nodes by name.",
       "phase": "normal"
     },
     {
       "id": 2,
-      "prompt": "I have no idea what this repo does. Can you map it out for me?",
-      "expected_output": "The skill triggers and starts Phase 1 (Discover) to establish directory structure, then launches parallel agents. Output includes a knowledge map, architecture deep-dive, and onboarding guide.",
+      "prompt": "What are the most important files in /Users/me/project and what can I safely ignore?",
+      "expected_output": "The graph explorer opens with Hotspots sidebar populated (top 15 files ranked by connection count). Dead Areas section shows files with zero inbound imports. Onboarding paths trace through real connections. No walls of text — the graph is the primary interface.",
       "phase": "vague"
     },
     {
       "id": 3,
-      "prompt": "Trace a complete request through the system in /Users/me/microservice-app. I need to know every component, every guard, and every data store involved. Also generate a diagram.",
-      "expected_output": "architecture.md with full request flow trace (frontend → gateway → auth → service → DB → response), Mermaid sequence diagram in diagrams/flow.mmd, and component interaction table.",
+      "prompt": "Trace the full auth request flow in /Users/me/microservice-app through the dependency graph.",
+      "expected_output": "A critical path trace through the graph: LoginPage → authApi → apiClient → AuthContext → ProtectedRoute. Nodes are highlighted with green border. Edges between them are visible. Clicking each node shows its file details. The onboarding auth path is listed in the sidebar.",
       "phase": "complex"
     },
     {
       "id": 4,
-      "prompt": "What parts of /Users/me/large-monorepo can I safely ignore as a new developer?",
-      "expected_output": "onboarding.md with P0/P1/P2 priority ranking, 'safe to ignore' section with specific directory paths, and top-5-files-to-read-first.",
+      "prompt": "Show me circular dependencies in /Users/me/large-monorepo.",
+      "expected_output": "Graph with Circular Dependencies section populated in sidebar. Each cycle listed (e.g., A → B → C → A). Clicking a cycle traces and highlights the cycle nodes. The graph also shows hotspots (most connected files by degree).",
       "phase": "edge"
     },
     {

@@ -1,99 +1,80 @@
-# Architecture Template
+# Architecture Template (Graph-First)
 
-Use this template when writing `architecture.md` for a target codebase.
+The architecture is represented as an interactive graph, not a document.
 
-## Sections
+## Nodes to Extract
 
-### 1. System Context Diagram (C4 Level 1)
+| Type | Examples | Color | What to Capture |
+|------|----------|-------|-----------------|
+| Component | `UserDashboard.tsx`, `LoginPage.tsx` | blue | File path, key functions, props |
+| Service | `apiClient.ts`, `authApi.ts` | purple | Methods, endpoints, config |
+| Route | `router.tsx`, `tickets.js` | green | Path patterns, handlers, middleware |
+| Context | `UserContext.tsx`, `AuthContext.tsx` | amber | Provider, consumers, state shape |
+| Util | `utils.ts`, `helpers.ts`, `constants.ts` | gray | Exports, usage count |
+| Config | `package.json`, `tsconfig.json` | red | Dependencies, settings |
+| DB | `schema.sql`, `models.ts`, `queries.ts` | cyan | Tables, indexes, migrations |
+| Hook | `useCurrentUser.ts`, `useTicketData.ts` | pink | Returns, which contexts used |
 
-```mermaid
-graph LR
-    User((User)) --> System[Your System Name]
-    System --> External1[External System A]
-    System --> External2[External System B]
+## Edge Types
+
+| Type | Style | Meaning |
+|------|-------|---------|
+| import | solid | File A imports File B |
+| route | dashed | Route handler delegates to service |
+| context | dotted | Component consumes a context |
+| api | dash-dot | File calls an API endpoint |
+| db | solid (thick) | File accesses a database |
+
+## Request Flow Graph
+
+Not a linear trace — a subgraph showing the actual path:
+
+```text
+LoginPage ──import──→ authApi ──import──→ apiClient
+   │                      │
+   └──use──→ AuthContext  └──use──→ AuthProvider
+                │
+                └──consumed-by──→ ProtectedRoute
+                                     │
+                                     └──import──→ apiClient
 ```
 
-Replace with actual external actors and systems.
+## Hotspot Identification
 
-### 2. Container Diagram (C4 Level 2)
+Rank nodes by total degree (inbound + outbound):
 
-```mermaid
-graph TD
-    FE[Frontend SPA] -->|HTTP| GW[API Gateway]
-    GW --> AUTH[Auth Service]
-    GW --> S1[Service A]
-    GW --> S2[Service B]
-    AUTH --> DB_AUTH[(Auth DB)]
-    S1 --> DB1[(DB A)]
-    S2 --> DB2[(DB B)]
-    S1 --> MQ[(Message Queue)]
-    MQ --> Worker[Background Worker]
-    Worker --> DB1
+```text
+apiClient.ts:      18 inbound + 12 outbound = 30  ← CORE
+UserContext.tsx:    14 + 8 = 22                    ← CORE
+ProtectedRoute:    12 + 6 = 18                    ← CORE
+router.tsx:         4 + 14 = 18                   ← CORE
+TicketRouting:      8 + 6 = 14                    ← IMPORTANT
+utils.ts:           1 + 10 = 11                   ← IMPORTANT
 ```
 
-### 3. Request Flow Trace
+## Critical Path Traces
 
-```
-Client Browser
-    │ GET /api/orders
-    ▼
-API Gateway (nginx / envoy / custom)
-    │ authenticate JWT
-    ▼
-Auth Middleware
-    │ validate → attach user claims
-    ▼
-Router → OrderController.index()
-    │ authorize (role: user)
-    ▼
-OrderService.listOrders(userId)
-    │ build query
-    ▼
-OrderRepository.findAll({ userId })
-    │ SQL SELECT
-    ▼
-PostgreSQL (orders table)
-    │ return rows
-    ▼
-... bubble back up through each layer with transformation
+Extract complete source-to-sink paths:
+
+```text
+Auth Flow:
+  LoginPage → authApi → apiClient → /api/auth/login
+    → AuthContext.setUser() → ProtectedRoute.enableAccess()
+    → App re-renders with authenticated routes
+
+Ticket Creation:
+  TicketsPage → TicketsRoute → ticketRouting.chooseAssignee()
+    → deterministicRoute() | routeWithLuminaModel()
+    → ticketPermissions.canCreate() → mailer.sendNotification()
+    → ticketsDb.insert()
 ```
 
-### 4. Layer Map
+## Circular Dependency Detection
 
-| Layer | Directory | Responsibility | Guards |
-|-------|-----------|----------------|--------|
-| Presentation/UI | `src/pages/`, `src/components/` | Render UI, capture input | — |
-| API/Router | `src/router/`, `src/controllers/` | Route matching, request parsing | Rate limiter |
-| Auth | `src/middleware/auth.ts` | JWT validation, RBAC | Token expiry, role check |
-| Business Logic | `src/services/` | Domain logic, orchestration | Input validation |
-| Data Access | `src/repositories/` | Queries, ORM | Connection pool, timeout |
-| Storage | `src/db/` | Schema, migrations | Migrations, constraints |
+When A imports B, B imports C, and C imports A:
 
-### 5. Mechanisms
-
-| Mechanism | What It Does | Prevents | Enables |
-|-----------|-------------|----------|---------|
-| Rate Limiter | Throttle requests per IP/user | Abuse, DoS | Fair usage |
-| Auth Middleware | Validate JWT per request | Unauthorized access | RBAC |
-| Idempotency Key | Deduplicate writes | Duplicate orders | Retry safety |
-| Circuit Breaker | Fail fast when downstream is down | Cascading failures | Graceful degradation |
-| Validation Layer | Schema check on input | Invalid data | Type safety |
-
-### 6. Service Deep Dive (per service)
-
-For each service/component, document:
-
-```markdown
-### Service: Orders Service
-**Location**: `src/services/orders/`
-**Purpose**: Manage order lifecycle (create, update, cancel)
-**Depends On**: Auth Service, Payment Service, Inventory Service
-**Dependents**: Notification Service, Analytics Service
-**Data Owned**: `orders`, `order_items` tables
-**Entry Points**: `POST /api/orders`, `GET /api/orders/:id`, `PATCH /api/orders/:id`
-**Key Files**:
-- `OrdersController.ts` — HTTP handlers
-- `OrdersService.ts` — Business logic
-- `OrdersRepository.ts` — Data access
-- `validators.ts` — Input validation schemas
+```text
+userService.ts → userController.ts → userRoutes.ts → userService.ts
 ```
+
+Record each cycle with its file paths and the specific import lines.

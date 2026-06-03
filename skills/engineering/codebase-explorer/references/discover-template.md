@@ -1,57 +1,108 @@
-# Discovery Template
+# Discovery Template (Graph-First)
 
-Use this template when writing `discover.md` for a target codebase.
+Discovery identifies the nodes and edges for the interactive graph.
 
-## Sections
+## What to Extract
 
-### 1. Directory Tree
-Insert the full `eza --tree` or `tree` output here, annotated with:
-- `[EP]` — entry point
-- `[CFG]` — config file
-- `[CORE]` — core logic
-- `[TEST]` — tests
-- `[LEGACY]` — deprecated/safe to ignore
+For every source file in the codebase, extract:
 
-### 2. Entry Points
-Scan for these filenames and pattern-match against common frameworks:
+### 1. Node Entry
 
-| Pattern | Likely Role |
-|---------|-------------|
-| `main.ts`, `main.go`, `main.py`, `index.ts` | Application bootstrap |
-| `app.ts`, `app.py`, `application.go` | App initialization |
-| `router.ts`, `routes.ts`, `urls.py` | Route registration |
-| `server.ts`, `server.go`, `serve.py` | HTTP server setup |
-| `cli.ts`, `cmd/`, `cli.py` | CLI commands |
+```json
+{
+  "id": "apiClient.ts",
+  "label": "apiClient.ts",
+  "type": "service",
+  "path": "src/api/apiClient.ts",
+  "imports": ["axios", "authApi", "usersApi"],
+  "exports": ["apiClient"],
+  "keyFunctions": ["get()", "post()", "put()", "delete()"],
+  "connected": 0,
+  "dependents": []
+}
+```
 
-### 3. Configuration Files
+### 2. Edge Entry
 
-| Pattern | Role |
+```json
+{ "source": "UserDashboard", "target": "apiClient.ts", "type": "import" }
+```
+
+### 3. File Scanning Rules
+
+Scan all source files (skip node_modules, .git, dist, build, .next).
+
+For each file:
+
+**JavaScript/TypeScript:**
+- `import X from 'y'` → edge from file to y
+- `import { X } from 'y'` → edge from file to y
+- `require('y')` → edge from file to y
+- `export ...` → record exports
+- `function X()` → record key function
+
+**Python:**
+- `import x` → edge from file to x
+- `from x import y` → edge from file to x
+- `def X():` → record key function
+
+**Rust:**
+- `use x::y` → edge from file to x
+- `mod x` → edge from file to x
+- `fn X()` → record key function
+
+**Go:**
+- `import "x"` → edge from file to x
+- `func X()` → record key function
+
+### 4. Router Detection
+
+For files that define routes, also extract:
+- Route paths (e.g., `/api/tickets`)
+- Handler file names
+- Middleware/guard file names
+- Route nesting
+
+### 5. Context/Provider Detection
+
+For files defining React contexts or Vue providers:
+- Context name
+- Provider file
+- Consumer files (files that import/use the context)
+- State shape description
+
+### 6. API Call Detection
+
+For files that make HTTP requests:
+- Called endpoints
+- Base URL configuration
+- API client file reference
+
+## Output JSON Structure
+
+```json
+{
+  "projectName": "my-app",
+  "nodes": [...],
+  "edges": [...],
+  "hotspots": [...],
+  "criticalPaths": [...],
+  "onboardingPaths": {...},
+  "deadAreas": [...],
+  "circularDeps": [...],
+  "categories": {...}
+}
+```
+
+## Type Classification Heuristics
+
+| Pattern | Type |
 |---------|------|
-| `package.json` | Node.js project metadata |
-| `Cargo.toml` | Rust project metadata |
-| `go.mod` | Go module definition |
-| `pyproject.toml`, `setup.py` | Python project metadata |
-| `Dockerfile`, `compose.yaml` | Container definitions |
-| `.env*`, `config/` | Runtime configuration |
-| `Makefile`, `Justfile`, `Taskfile.yml` | Build orchestration |
-| `.github/`, `.gitlab-ci.yml`, `Jenkinsfile` | CI/CD pipelines |
-
-### 4. Language & Size Breakdown
-Use `cloc` or `tokei` or `scc` if available for accurate counts. Otherwise estimate from the tree.
-
-### 5. Test Layout
-
-| Location | Framework (likely) |
-|----------|-------------------|
-| `__tests__/` | Jest |
-| `*.test.ts` | Vitest, Jest |
-| `tests/` | pytest, Go test |
-| `src/**/*.spec.ts` | Jasmine, Jest |
-
-### 6. Ignore Candidates
-Flag directories and files that are safe to skip on first pass:
-- Vendor/cached dependencies
-- Generated code (protobuf, GraphQL types)
-- Legacy or deprecated modules
-- Build artifacts
-- Documentation-only directories (non-code)
+| `.tsx`, `.jsx`, `Component`, `Page` | component |
+| `api`, `client`, `service`, `provider` | service |
+| `route`, `router`, `handler`, `controller` | route |
+| `Context`, `Provider` | context |
+| `util`, `helper`, `util`, `constant` | util |
+| `.json`, `.config`, `config`, `env` | config |
+| `schema`, `model`, `db`, `sql`, `migration` | db |
+| `use[A-Z]`, `hook` | hook |

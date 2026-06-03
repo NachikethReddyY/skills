@@ -1,71 +1,73 @@
-# Onboarding Guide Template
+# Onboarding Template (Graph-First)
 
-Use this template when writing `onboarding.md` for a target codebase.
+Learning paths are interactive graph traces, not reading lists.
 
-## Sections
+## Learning Path Format
 
-### 1. Learning Path (Priority Order)
+Each path is an ordered list of graph nodes that form a complete trace through the system. Clicking a path in the graph explorer highlights each node and edges between them.
 
-Present as a ranked table:
-
-| Priority | Area | Why Learn First | Files to Read | Estimated Time |
-|----------|------|-----------------|---------------|----------------|
-| P0 | Core Domain Model | Everything depends on it | `src/domain/` | 30 min |
-| P0 | Entry Points & Routing | All requests enter here | `src/router/`, `src/server.ts` | 20 min |
-| P1 | Service Layer | Business logic lives here | `src/services/` | 1 hr |
-| P1 | Data Layer | Understanding the schema | `src/db/schema/`, migrations | 45 min |
-| P2 | Config & DevOps | Rarely changes | `config/`, `Dockerfile` | 15 min |
-| P2 | Legacy Modules | Deprecated, being removed | `src/legacy/` | Skip |
-
-### 2. Top 5 Files to Read First
-
-| # | File | Why |
-|---|------|-----|
-| 1 | `src/main.ts` | Application bootstrap sequence |
-| 2 | `src/router/index.ts` | All API endpoints in one place |
-| 3 | `src/domain/model.ts` | Core entities and relationships |
-| 4 | `src/middleware/auth.ts` | Security boundary |
-| 5 | `src/db/schema.sql` | Full data model |
-
-### 3. What You Can Safely Ignore
-
-| Area | Reason | When to Revisit |
-|------|--------|-----------------|
-| `scripts/` | Build tooling, not runtime code | When modifying CI |
-| `vendor/`, `node_modules/` | Third-party dependencies | When debugging dependency issues |
-| `docs/` (non-code) | May be outdated | For reference only |
-| `legacy/` | Deprecated modules | When removing them |
-| Generated code (protos, types) | Machine-written | Only to understand interfaces |
-
-### 4. How Requests Flow (Visual Summary)
-
-```
-[Browser] → [CDN] → [Load Balancer] → [API Gateway]
-                                           │
-                                    [Auth Middleware]
-                                           │
-                              ┌────────────┼────────────┐
-                              ▼            ▼            ▼
-                         [Service A]  [Service B]  [Service C]
-                              │            │            │
-                              ▼            ▼            ▼
-                         [(DB A)]    [(DB B)]    [(Queue)] → [Worker]
+```json
+{
+  "onboardingPaths": {
+    "New Engineer": [
+      "App.tsx",
+      "ProtectedRoute.tsx",
+      "UserContext.tsx",
+      "apiClient.ts",
+      "TicketsRoute",
+      "ticketRouting",
+      "db/schema.sql"
+    ],
+    "Frontend": [
+      "App.tsx",
+      "router.tsx",
+      "pages/",
+      "components/",
+      "hooks/",
+      "contexts/"
+    ],
+    "Backend": [
+      "server.ts",
+      "routes/",
+      "services/",
+      "middleware/",
+      "db/"
+    ],
+    "Database": [
+      "db/schema.sql",
+      "migrations/",
+      "models/",
+      "queries/"
+    ],
+    "Authentication": [
+      "LoginPage",
+      "authApi",
+      "AuthContext",
+      "ProtectedRoute",
+      "oauth/"
+    ]
+  }
+}
 ```
 
-### 5. Local Development Setup
+## Rules for Path Construction
 
-```bash
-# Quick start
-cp .env.example .env
-docker compose up -d
-npm install
-npm run dev
-```
+1. Every node in a path must exist in the graph (real file or directory)
+2. Consecutive nodes must have a direct edge between them (or be trivially connected)
+3. Paths should be 5-10 nodes — long enough to be useful, short enough to scan
+4. Each path answers "what would a person in this role need to trace?"
+5. Order matters: start at the entry point closest to the user
 
-### 6. Testing Strategy
+## What to Learn First (Sidebar List)
 
-| Test Type | Location | Run Command | Coverage Target |
-|-----------|----------|-------------|-----------------|
-| Unit | `src/**/*.test.ts` | `npm test` | 80%+ |
-| Integration | `tests/integration/` | `npm run test:integration` | Key paths |
-| E2E | `tests/e2e/` | `npm run test:e2e` | Critical flows |
+Instead of ranking by priority, rank by graph degree:
+
+| Priority | File | Connected | Why |
+|----------|------|-----------|-----|
+| P0 | `apiClient.ts` | 30 edges | Everything passes through it |
+| P0 | `UserContext.tsx` | 22 edges | Auth state for every page |
+| P0 | `ProtectedRoute.tsx` | 18 edges | Security boundary |
+| P1 | `TicketRouting.ts` | 14 edges | Core business logic |
+| P1 | `router.tsx` | 18 edges | Entry point for all routes |
+| P2 | `utils.ts` | 11 edges | Shared helpers, low risk |
+| P2 | `constants.ts` | 5 edges | Static values, rarely changes |

@@ -1,8 +1,8 @@
 ---
 name: codebase-explorer
-description: Explore an entire codebase to understand its structure, architecture, data flow, and key systems — without making any fixes. Use when the user asks to "explore a codebase", "understand this code", "review the architecture", "how does this project work", "map the system", "onboard to this project", "trace request flow", "what can I ignore", "generate diagrams", or "create documentation". Do NOT use when the user wants bug fixes, refactoring, or feature additions.
-version: 1.0.0
-category: code-review
+description: Explore an entire codebase through an interactive zoomable graph built from real file relationships (imports, exports, route deps, hook usage, context providers, API calls, DB access). Generates a Cytoscape.js-based explorer where the graph is the primary interface and documentation is secondary. Use when the user asks to "explore", "understand", "map", "onboard", "trace request flow", "what can I ignore", "generate knowledge graph", or "dependency analysis" on any codebase. Do NOT use when the user wants bugs fixed, refactoring, or feature additions.
+version: 2.0.0
+category: engineering
 portable: true
 ---
 
@@ -10,29 +10,23 @@ portable: true
 
 ## Purpose
 
-Produce a comprehensive, read-only map of any codebase. The output answers:
-- How does this codebase work?
-- How does everything link together?
-- What are the important systems?
-- What should a new developer learn first?
-- Which is the most important part?
-- How does a request flow through the system?
-- What can you safely ignore?
+Transform any codebase into an interactive explorable graph. A new engineer should understand the architecture by interacting with the graph for 5 minutes without reading long documents.
+
+The graph is the primary interface. Documentation is secondary.
 
 ## When to Use
 
 Use this skill when:
 - User asks to "explore", "understand", "map", or "review" a codebase
-- User wants architecture docs, system diagrams, or onboarding guides
-- User asks "how does this project work" or "trace the request flow"
-- User needs to onboard onto an unfamiliar codebase
-- User wants a knowledge graph, entity map, or dependency analysis
-- User asks "what can I safely ignore" in a codebase
+- User wants to trace how files depend on each other
+- User wants to onboard onto an unfamiliar codebase
+- User asks "what are the most important files", "what can I safely ignore"
+- User asks "how does a request flow through the system"
+- User asks "what are the core modules", "find circular dependencies"
 
 Do NOT use this skill when:
 - User wants bugs fixed, code changed, or refactoring
 - User wants a line-by-line code review for correctness
-- User wants performance optimization or security auditing
 - The codebase is a single-file script (too small to need mapping)
 
 ## Inputs
@@ -41,345 +35,266 @@ Do NOT use this skill when:
 |-------|----------|-------------|
 | `TARGET_DIR` | Yes | Absolute path to the codebase root |
 | `OUTPUT_DIR` | No | Where to write outputs (defaults to `TARGET_DIR/docs/exploration/`) |
-| `DEPTH` | No | Directory tree depth limit (default: 5) |
-| `SKIP_DIRS` | No | Comma-separated dirs to skip (default: node_modules,.git,dist,build,.next) |
 
 ## Cross-Skill References
 
-This skill loads and delegates to other skills during its workflow:
-
 | Skill | Location | Used For |
 |-------|----------|----------|
-| `frontend-design` | `file:///Users/nr/.agents/skills/frontend-design/SKILL.md` | HTML report styling, interaction states, responsive layout, dark/light mode |
-| `preflight` agent personas | `file:///Users/nr/.agents/skills/preflight/agents/` | Review quality of exploration outputs using eng-reviewer, design-reviewer, security-reviewer personas |
+| `frontend-design` | `file:///Users/nr/.agents/skills/frontend-design/SKILL.md` | Design the graph explorer UI: layout, interactions, states, visual hierarchy, cards, progressive disclosure |
 
-Load these skills when entering their respective phases.
+Load the frontend-design skill before building the HTML template to ensure the output looks like a modern developer tool, not a documentation page.
 
 ## Prerequisites
 
-Before starting, verify a directory tree command is available:
-
 ```bash
-# Step 1: try `tree` directly
-if command -v tree >/dev/null 2>&1; then
-  echo "tree found"
-  exit 0
-fi
+# Directory tree
+command -v eza >/dev/null 2>&1 || brew install eza
 
-# Step 2: not found — detect OS
-OS=$(uname -s)
-case "$OS" in
-  Darwin)
-    # macOS — install eza, alias as tree
-    if ! command -v eza >/dev/null 2>&1; then
-      brew install eza
-    fi
-    # Create persistent alias in shell config
-    SHELL_CONFIG="$HOME/.zshrc"
-    if ! grep -q "alias tree=" "$SHELL_CONFIG" 2>/dev/null; then
-      echo "alias tree='eza --tree --icons'" >> "$SHELL_CONFIG"
-    fi
-    # For current session: define a shell function to emulate tree
-    tree() { eza --tree --icons "$@"; }
-    echo "tree alias set via eza"
-    ;;
-  Linux)
-    # Linux — install tree via apt/yum, or use find fallback
-    if command -v apt-get >/dev/null 2>&1; then
-      sudo apt-get install -y tree
-    elif command -v yum >/dev/null 2>&1; then
-      sudo yum install -y tree
-    else
-      echo "tree not available — using fallback"
-      tree() { find "$@" -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'; }
-    fi
-    ;;
-  *)
-    # Fallback: basic directory printer
-    tree() { find "$@" -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'; }
-    ;;
-esac
+# Node.js (for the graph data generator)
+command -v node >/dev/null 2>&1 || echo "node required to run generate-outputs.js"
 ```
-
-After setup, `tree <dir>` produces the directory tree. In agent sessions where aliases may not load, use `eza --tree --icons <dir>` directly instead of the `tree` command.
 
 ## Workflow
 
-### Phase 1: Discover
+### Phase 1: Extract — Discover Real Relationships
 
-Run the directory tree to establish the physical layout:
+Parse the codebase to build a dependency graph from actual code, not assumptions.
 
-```bash
-TARGET_DIR=<path>
-OUTPUT_DIR=<path>/docs/exploration
-mkdir -p "$OUTPUT_DIR"/diagrams
+Read these categories of files and extract their relationships:
 
-# Generate directory tree (try eza first, fall back to tree)
-if command -v eza >/dev/null 2>&1; then
-  eza --tree --level=5 --ignore-glob='node_modules|.git|dist|build|.next' "$TARGET_DIR" > "$OUTPUT_DIR"/discover.md
-else
-  tree -L 5 -I 'node_modules|.git|dist|build|.next' "$TARGET_DIR" > "$OUTPUT_DIR"/discover.md
-fi
+#### Imports / Exports
+For every source file, extract:
+- `import` statements → edges from file to dependency
+- `export` statements → edges from file to what it exposes
+- `require()` calls → edges from file to dependency
+
+#### Route Definitions
+For router/config files, extract:
+- Route paths and their handler files
+- Route nesting/parent relationships
+- Route guards/middleware
+
+#### Context / Provider Trees
+For React/Vue context files, extract:
+- Provider → consumer relationships
+- Context dependencies
+- Hook → context relationships
+
+#### API Calls
+For files making network requests:
+- Which endpoints they call
+- Which service files they depend on
+
+#### Database Access
+For data layer files:
+- Which tables/collections they access
+- Which service files consume them
+
+#### Configuration References
+- Package dependency declarations (package.json, Cargo.toml, go.mod, etc.)
+- Build configuration references
+
+### Phase 2: Analyze — Repository Intelligence
+
+From the extracted graph, compute:
+
+#### Hotspots (Most Connected Files)
+```text
+| File | Inbound | Outbound | Total |
+|------|---------|----------|-------|
+| apiClient.ts | 24 | 12 | 36 |
+| UserContext.tsx | 18 | 8 | 26 |
+| ProtectedRoute.tsx | 15 | 5 | 20 |
 ```
 
-Append to `discover.md`:
-- Entry point files found (e.g., `main.go`, `index.tsx`, `app.py`, `server.js`)
-- Configuration files (e.g., `package.json`, `Cargo.toml`, `go.mod`, `Dockerfile`)
-- Top-level README or docs
-- Test directories and their naming conventions
+#### Core Modules (High Betweenness Centrality)
+Files whose removal would fragment the graph most. These are the files to learn first.
 
-### Phase 2: Parallel Agents (Run Concurrently)
-
-Launch 5 agents in parallel. Each produces a markdown section for the final report.
-
-#### Agent A — Repository Explorer
-- Maps: directory structure, file naming patterns, language distribution
-- Identifies: monorepo vs polyrepo, microservices vs monolith, frontend/backend split
-- Detects: build systems, package managers, CI/CD configs
-- Output: `discover.md` (augmented)
-
-#### Agent B — Architecture Generator
-- Reads: entry points, routers, middleware, controllers, services, data layers
-- Creates: request flow trace (frontend → API gateway → auth → service → DB)
-- Identifies: layers, boundaries, dependency direction
-- Output: `architecture.md`
-
-#### Agent C — Graph / Diagram Generator
-- Generates Mermaid.js diagrams for:
-  - System context (C4 Level 1)
-  - Container diagram (C4 Level 2)
-  - Request flow sequence diagram
-  - Entity-relationship diagram
-  - Component dependency graph
-- Output: `diagrams/` folder (`.md` files with embedded Mermaid)
-
-#### Agent D — Knowledge Graph Generator
-- Identifies: business domains, entities, bounded contexts
-- Maps: which service owns which data, which store each entity touches
-- Lists: critical paths through the system
-- Output: `glossary.md` + `architecture.md` (knowledge map section)
-
-#### Agent E — Onboarding Guide Generator
-- Synthesizes all other outputs into a learning path
-- Answers: "what to learn first", "what can you safely ignore"
-- Ranks: areas by importance (P0, P1, P2)
-- Provides: recommended reading order with file links
-- Output: `onboarding.md`
-
-### Phase 3: Synthesis
-
-Merge all parallel outputs into a unified knowledge map.
-
-**Knowledge Map** (placed at the top of every document):
-
-```mermaid
-graph TD
-    subgraph "Frontend"
-        FE[Client App]
-    end
-    subgraph "Gateway"
-        GW[API Gateway / Router]
-        AUTH[Auth Layer]
-    end
-    subgraph "Services"
-        S1[Service A]
-        S2[Service B]
-        S3[Service C]
-    end
-    subgraph "Data"
-        DB[(Database)]
-        CACHE[(Cache)]
-        QUEUE[(Message Queue)]
-    end
-    FE -->|HTTP/WS| GW
-    GW --> AUTH
-    AUTH --> S1
-    AUTH --> S2
-    AUTH --> S3
-    S1 --> DB
-    S1 --> CACHE
-    S2 --> DB
-    S3 --> QUEUE
-    S3 --> DB
+#### Critical Paths
+Trace end-to-end paths through the graph:
+```text
+Auth Flow: LoginPage → authApi → AuthContext → ProtectedRoute → apiClient → UserContext
+Ticket Flow: TicketsPage → ticketRouting → ticketPermissions → mailer → PostgreSQL
 ```
 
-Replace generic service names with actual names from the codebase.
+#### Dead Areas
+Files with zero inbound imports (no other file depends on them). Candidates for safe-to-ignore.
+
+#### Circular Dependencies
+Detect cycles in the import graph:
+```text
+A → B → C → A
+```
+
+### Phase 3: Build Interactive Graph
+
+Generate an interactive graph explorer using Cytoscape.js (self-contained HTML, no build step):
+
+#### Required Features
+
+| Feature | Implementation |
+|---------|---------------|
+| Force-directed layout | Cytoscape `cose` or `cose-bilkent` layout |
+| Zoom + pan | Built-in Cytoscape |
+| Click to expand node | Reveals imports/exports as connected subgraph |
+| Click to inspect | Right panel shows: purpose, imports, exports, key functions, related files |
+| Search / filter | Search bar filters visible nodes by name |
+| Relationship highlighting | Hover node → highlight all connected nodes, dim rest |
+| Minimap | Cytoscape navigator extension |
+| Node collapse | Collapse explored subgraph back to single node |
+| Breadcrumbs | Top-of-viewport trail of navigation path |
+| Zoom controls | +/- buttons, fit-to-view button |
+| Dark/light mode | System preference + toggle |
+| Grouping by type | Color/shape coding: component, service, route, context, util, config |
+
+#### Graph Data Format
+
+The graph data is injected into the HTML template as a JSON object:
+
+```json
+{
+  "projectName": "my-app",
+  "nodes": [
+    {
+      "id": "apiClient.ts",
+      "label": "apiClient.ts",
+      "type": "service",
+      "path": "src/api/apiClient.ts",
+      "imports": ["axios", "authApi", "usersApi"],
+      "exports": ["apiClient"],
+      "keyFunctions": ["get()", "post()", "put()", "delete()"],
+      "connected": 36,
+      "dependents": ["UserDashboard", "TicketsPage", "SettingsPage"]
+    }
+  ],
+  "edges": [
+    { "source": "apiClient.ts", "target": "axios", "type": "import" },
+    { "source": "UserDashboard", "target": "apiClient.ts", "type": "import" }
+  ],
+  "hotspots": [
+    { "file": "apiClient.ts", "inbound": 24, "outbound": 12, "total": 36 },
+    { "file": "UserContext.tsx", "inbound": 18, "outbound": 8, "total": 26 }
+  ],
+  "criticalPaths": [
+    { "name": "Auth Flow", "path": ["LoginPage", "authApi", "AuthContext", "ProtectedRoute", "apiClient", "UserContext"] },
+    { "name": "Ticket Creation", "path": ["TicketsPage", "TicketsRoute", "ticketRouting", "ticketPermissions", "mailer", "ticketsDb"] }
+  ],
+  "onboardingPaths": {
+    "New Engineer": ["App.tsx", "ProtectedRoute", "UserContext", "apiClient", "TicketsRoute", "ticketRouting", "db/schema"],
+    "Frontend": ["App.tsx", "router.tsx", "pages/", "components/", "hooks/", "contexts/"],
+    "Backend": ["server.ts", "routes/", "services/", "middleware/", "db/"],
+    "Database": ["db/schema.sql", "migrations/", "models/", "queries/"],
+    "Authentication": ["LoginPage", "authApi", "AuthContext", "ProtectedRoute", "oauth/"]
+  },
+  "deadAreas": ["legacy/", "scripts/", "stories/"],
+  "circularDeps": [
+    { "cycle": ["A.ts", "B.ts", "C.ts", "A.ts"] }
+  ],
+  "categories": {
+    "component": { "color": "#3b82f6", "shape": "round-rectangle" },
+    "service": { "color": "#8b5cf6", "shape": "hexagon" },
+    "route": { "color": "#10b981", "shape": "rectangle" },
+    "context": { "color": "#f59e0b", "shape": "round-rectangle" },
+    "util": { "color": "#6b7280", "shape": "ellipse" },
+    "config": { "color": "#ef4444", "shape": "diamond" },
+    "db": { "color": "#06b6d4", "shape": "cylinder" },
+    "hook": { "color": "#ec4899", "shape": "round-rectangle" }
+  }
+}
+```
 
 ### Phase 4: Generate Outputs
 
-Generate two parallel output formats:
+#### Interactive HTML Explorer (Primary)
 
-#### Markdown files (always written to `$OUTPUT_DIR/`):
-
-| File | Contents |
-|------|----------|
-| `discover.md` | Directory tree, entry points, configs, language breakdown |
-| `architecture.md` | Request flow, layer diagram, component interactions, mechanisms |
-| `glossary.md` | Domain entities, data ownership, service responsibilities |
-| `onboarding.md` | Learning path, importance ranking, safe-to-ignore areas |
-| `diagrams/flow.mmd` | Mermaid sequence diagram |
-| `diagrams/system.mmd` | C4 system context diagram |
-| `diagrams/components.mmd` | Component dependency graph |
-| `diagrams/entities.mmd` | Entity-relationship diagram |
-
-#### HTML report (generated via `frontend-design` skill + merge script)
-
-Load the `frontend-design` skill (`file:///Users/nr/.agents/skills/frontend-design/SKILL.md`) to design and build the HTML report. Delegate the following to it:
-
-- **Layout**: sticky sidebar nav, scroll-spy highlighting, responsive breakpoints
-- **States**: loading skeleton while Mermaid renders, empty state when sections are missing, error state for broken diagrams
-- **Interactions**: smooth scroll, active nav tracking, back-to-top, keyboard nav (arrow keys between sections)
-- **Visual design**: typography scale, color system (dark/light), spacing, hover/focus states on nav links
-- **Mermaid integration**: live CDN render, dark/light theme sync, zoom/pan on large diagrams
-
-After the frontend-design skill produces the HTML template at `assets/report-template.html`, run the merge script to inject content:
+Generated by injecting the graph JSON into `assets/report-template.html`:
 
 ```bash
 node scripts/generate-outputs.js "$OUTPUT_DIR"
 ```
 
+Output: `exploration-report.html` — a self-contained single-page app. The graph is the landing page. Documentation panels open on click.
+
+#### Supporting Markdown Files (Secondary)
+
 | File | Contents |
 |------|----------|
-| `exploration-report.html` | Polished single-page HTML combining all outputs with interactive diagrams |
+| `hotspots.md` | Ranked list of most connected files |
+| `critical-paths.md` | End-to-end request flow traces |
+| `dead-areas.md` | Files with no dependents |
+| `circular-deps.md` | Detected import cycles |
+| `onboarding.md` | Learning paths by role |
 
 ## Output Format
 
-### `discover.md`
-
-```markdown
-# Repository Discovery
-
-## Directory Tree
-\`\`\`
-<eza --tree output>
-\`\`\`
-
-## Entry Points
-- `src/main.ts` — Application bootstrap
-- `src/router/index.ts` — Route registration
-...
-
-## Configuration
-- `package.json` — Dependencies & scripts
-- `tsconfig.json` — TypeScript config
-...
-
-## Language Breakdown
-| Language | Files | % of Codebase |
-|----------|-------|---------------|
-| TypeScript | 142 | 62% |
-| Rust | 48 | 21% |
-...
-```
-
-### `architecture.md`
-
-```markdown
-# Architecture
-
-## System Context (C4 Level 1)
-<mermaid diagram>
-
-## Request Flow
-1. Client sends HTTP request → API Gateway
-2. Gateway authenticates → Auth Service
-3. Auth validates JWT → passes claims
-4. Route dispatched → Controller
-5. Controller validates → calls Service
-6. Service orchestrates → Data Layer
-7. Response bubbles back up
-
-## Component Interactions
-| Component | Protocol | Depends On | Enables |
-|-----------|----------|------------|---------|
-| API Gateway | HTTP/gRPC | — | Rate limiting, auth |
-| Auth Service | HTTP | User DB | JWT, RBAC |
-| ... | ... | ... | ... |
-```
-
-### `glossary.md`
-
-```markdown
-# Glossary & Domain Map
-
-## Entities
-| Entity | Owned By | Stored In | Touched By |
-|--------|----------|-----------|------------|
-| User | Auth Service | `users` table | Auth, Profile, Billing |
-| Order | Order Service | `orders` table | Cart, Payment, Shipping |
-| ...
-
-## Critical Paths
-- User Registration → Auth → Profile → Welcome Email
-- Purchase Flow → Cart → Order → Payment → Shipping
-```
-
-### `onboarding.md`
-
-```markdown
-# Onboarding Guide
-
-## Priority Order
-### P0 (Learn First)
-- `src/core/` — The kernel of the system
-- `src/router/` — All entry points
-
-### P1 (Important)
-- `src/services/` — Business logic
-
-### P2 (Safe to Ignore Initially)
-- `scripts/` — Build tooling
-- `legacy/` — Deprecated modules
-```
-
 ### `exploration-report.html`
 
-A standalone HTML document containing:
-- Interactive Mermaid diagrams rendered via live CDN
-- Navigation sidebar with sections: Overview, Discover, Architecture, Glossary, Onboarding, Diagrams
-- Knowledge map as the hero section
-- Searchable table of contents
-- Dark/light mode toggle
-- Responsive layout
+A single-page interactive graph explorer with:
 
-### Phase 5: Review (Optional)
+**Landing page:** Full-screen zoomable knowledge graph built from real file relationships.
 
-If quality is critical, run outputs through `preflight` agent personas for review:
+**Left sidebar:**
+- Search bar (filters graph nodes by name)
+- Onboarding paths (click to trace a path through the graph)
+- Hotspots list (most connected files)
+- Dead areas (safe to ignore)
 
-Load each reviewer persona from `file:///Users/nr/.agents/skills/preflight/agents/` and feed them the generated docs:
+**Graph canvas:**
+- Force-directed layout
+- Node color/shape by type (component, service, route, context, util, config, db, hook)
+- Edge width by relationship strength
+- Hover highlights connected nodes, dims rest
+- Click reveals detail panel
 
-1. **`eng-reviewer.md`** — Reviews architecture.md for correctness, identifies missed dependencies, checks if request flow matches actual code paths
-2. **`design-reviewer.md`** — Reviews exploration-report.html for interaction states (loading, empty, error), responsive behavior, information hierarchy
-3. **`security-reviewer.md`** — Reviews glossary.md for data ownership/flows that could expose sensitive paths
+**Detail panel (click node):**
+- File path
+- Key functions
+- Imports list
+- Exports list
+- Dependents list
+- "Expand" button to show subgraph
 
-Each reviewer produces a structured JSON finding. Fix high-risk or confidence<5 findings before delivery.
+**Controls:**
+- Zoom + / - buttons
+- Fit to view
+- Reset layout
+- Toggle labels
+- Dark/light mode
+
+**Bottom bar:**
+- Breadcrumb trail of navigation
+- Mini-map / navigator
 
 ## Quality Bar
 
 The result is good only if:
-- A newcomer can understand the system from the outputs
-- Every output answers a specific question from the Purpose section
-- Architecture diagrams reflect actual code (not generic shapes)
-- Glossary entries link to real code locations
-- Onboarding guide contains specific file paths
-- HTML report is self-contained (no broken links)
-- Knowledge map is the most prominent visual element
+- A new engineer can understand the architecture by interacting with the graph for 5 minutes without reading long documents
+- The graph is built from real file relationships (imports, exports, route deps), not placeholders
+- Clicking any node reveals its purpose, imports, exports, dependents, and key functions
+- Search/filter works and highlights matching nodes
+- Onboarding paths trace real connections through the graph
+- Hotspots, critical paths, dead areas, and circular deps are computed from actual graph analysis
+- Dark/light mode works
+- No repeated/duplicate sections
+- The file is self-contained (no broken CDN links)
 
 ## Failure Modes
 
 Avoid:
-- Generating generic architecture that could describe any system
-- Making statements about data flow without tracing the actual code
-- Skipping the directory tree exploration
-- Producing diagrams disconnected from the codebase reality
-- Overwhelming the user with every detail — prioritize P0/P1
-- Generating HTML with broken diagrams or missing sections
+- Generating a static documentation page instead of an interactive graph
+- Using placeholder node names that don't exist in the codebase
+- Skipping import/export analysis and relying on manual descriptions
+- No dependency analysis — this is the most valuable output
+- No onboarding paths — a new engineer doesn't know where to start
+- Generic SaaS boilerplate diagrams
+- Repeated duplicate content across sections
+- Walls of text — prioritize visual exploration over textual explanation
 
 ## Improvement Loop
 
 If output is weak:
-1. Run the exploration at a deeper depth (`DEPTH=8`)
-2. Expand the skip list if too many irrelevant dirs are included
-3. Re-run agents with explicit file path hints from Phase 1 output
-4. Manually inspect key files if auto-analysis misses critical paths
-5. Regenerate HTML if diagrams fail to render
+1. Re-run Phase 1 with deeper file scanning to catch more relationships
+2. Verify the graph JSON has real node/edge data, not placeholders
+3. Check that onboarding paths reference actual files in the codebase
+4. Manually inspect a few key files to verify the extracted relationships are correct
+5. Regenerate the HTML if the graph UI doesn't render correctly
