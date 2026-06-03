@@ -1,0 +1,35 @@
+{
+  "skill_name": "codebase-explorer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Explore this codebase at /Users/me/project and tell me how it works. I just joined the team and need to understand the architecture. Generate all the exploration docs.",
+      "expected_output": "A full set of exploration docs (discover.md, architecture.md, glossary.md, onboarding.md, diagrams/) plus exploration-report.html, all written to project/docs/exploration/. Includes directory tree, request flow trace, entity map, and learning path.",
+      "phase": "normal"
+    },
+    {
+      "id": 2,
+      "prompt": "I have no idea what this repo does. Can you map it out for me?",
+      "expected_output": "The skill triggers and starts Phase 1 (Discover) to establish directory structure, then launches parallel agents. Output includes a knowledge map, architecture deep-dive, and onboarding guide.",
+      "phase": "vague"
+    },
+    {
+      "id": 3,
+      "prompt": "Trace a complete request through the system in /Users/me/microservice-app. I need to know every component, every guard, and every data store involved. Also generate a diagram.",
+      "expected_output": "architecture.md with full request flow trace (frontend → gateway → auth → service → DB → response), Mermaid sequence diagram in diagrams/flow.mmd, and component interaction table.",
+      "phase": "complex"
+    },
+    {
+      "id": 4,
+      "prompt": "What parts of /Users/me/large-monorepo can I safely ignore as a new developer?",
+      "expected_output": "onboarding.md with P0/P1/P2 priority ranking, 'safe to ignore' section with specific directory paths, and top-5-files-to-read-first.",
+      "phase": "edge"
+    },
+    {
+      "id": 5,
+      "prompt": "Fix this bug in /Users/me/project — the login endpoint returns 500.",
+      "expected_output": "Skill should NOT trigger. The agent should handle this as a normal bug-fix task without loading the codebase-explorer skill.",
+      "phase": "should-not-trigger"
+    }
+  ]
+}
