@@ -1,5 +1,5 @@
 ---
-name: frontend-design
+name: design-ui
 description: Create distinctive, production-grade frontend interfaces with high design quality across web and mobile (React Native). Use this skill when the user asks to build web components, pages, artifacts, posters, applications, or React Native mobile UIs (examples include websites, landing pages, dashboards, React components, HTML/CSS layouts, React Native screens, or when styling/beautifying any UI). Generates creative, polished code that stacks small intentional details — press states, subtle animations, haptics, keyboard integration, and crafted loading/empty states — to achieve a premium feel.
 version: 2.0.0
 category: design

@@ -40,9 +40,9 @@ Do NOT use this skill when:
 
 | Skill | Location | Used For |
 |-------|----------|----------|
-| `frontend-design` | `file:///Users/nr/.agents/skills/frontend-design/SKILL.md` | Design the graph explorer UI: layout, interactions, states, visual hierarchy, cards, progressive disclosure |
+| `design-ui` | `file:///Users/nr/.agents/skills/design-ui/SKILL.md` | Design the graph explorer UI: layout, interactions, states, visual hierarchy, cards, progressive disclosure |
 
-Load the frontend-design skill before building the HTML template to ensure the output looks like a modern developer tool, not a documentation page.
+Load the design-ui skill before building the HTML template to ensure the output looks like a modern developer tool, not a documentation page.
 
 ## Prerequisites
 

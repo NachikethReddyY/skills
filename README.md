@@ -34,7 +34,7 @@ Once installed, skills are available as `/command` in Claude Code:
 /caveman ultra               # Ultra-terse mode (~75% token savings)
 /skill-creator               # Build new skills
 /preflight                   # Validate with 4 parallel agent reviews
-/frontend-design             # Build distinctive non-generic UI
+/design-ui      # Build distinctive non-generic UI
 ```
 
 That's it. Skills auto-discover and work immediately.
@@ -66,7 +66,7 @@ That's it. Skills auto-discover and work immediately.
 
 | Skill | Purpose |
 |-------|---------|
-| **[frontend-design](skills/design/frontend-design/SKILL.md)** | Build distinctive, non-generic frontend interfaces with exceptional design quality. |
+| **[design-ui](skills/design/design-ui/SKILL.md)** | Build distinctive, non-generic frontend interfaces with exceptional design quality. |
 
 ## How It Works
 
@@ -159,7 +159,7 @@ skills/
 │       ├── SKILL.md
 │       └── agents/                 # Agent role definitions
 ├── design/                         # Design & UI
-│   └── frontend-design/
+│       └── design-ui/
 └── docs/
     ├── CONTEXT.md                  # Project domain language
     └── adr/                        # Architectural decisions
@@ -202,7 +202,7 @@ Then update the README's skill table.
 
 **Recently Added:**
 - `preflight` — 4 parallel agent reviews before implementation
-- `frontend-design` — build distinctive, non-generic frontend interfaces
+- `design-ui` — build distinctive, non-generic frontend interfaces
 
 **Engineering** (planned):
 - `tdd` — red-green-refactor loop for reliable feature development
