@@ -1,7 +1,7 @@
 ---
 name: design-ui
-description: Create distinctive, production-grade frontend interfaces with high design quality across web and mobile (React Native). Use this skill when the user asks to build web components, pages, artifacts, posters, applications, or React Native mobile UIs (examples include websites, landing pages, dashboards, React components, HTML/CSS layouts, React Native screens, or when styling/beautifying any UI). Generates creative, polished code that stacks small intentional details — press states, subtle animations, haptics, keyboard integration, and crafted loading/empty states — to achieve a premium feel.
-version: 2.0.0
+description: Create distinctive, production-grade frontend interfaces with high design quality across web, mobile (React Native), and macOS-style layouts. Applies Apple Human Interface Guidelines (spacing, typography, touch targets, whitespace, navigation) merged with bold aesthetic direction. Use when building or styling UI, mobile-first screens, native-feeling web apps, or when the user mentions Apple HIG, iOS design, design system tokens, or platform ergonomics.
+version: 3.0.0
 category: design
 portable: true
 ---
@@ -20,6 +20,8 @@ These principles, distilled from platform Human Interface Guidelines, frame ever
 Design is making something with intention. Every feature asks for the user's **time, attention, and trust** — valuable things you can't afford to waste. Before sketching or coding, ask: does this have purpose? Choosing what **not** to include is often more important than what to build.
 
 **Create value.** At every stage, ask what the product is for and whether the design serves that purpose. **Keep focused** — prioritize the most important features by aligning with how people actually want to use the product. **Find new ways to solve the problem** — investigate existing solutions without re-creating them; define what sets your product apart.
+
+**Affordances & signifiers** — every interactive element must signal its purpose without instruction. A button looks pressable (shadow, shape, label), a link looks clickable (color, underline), a slider looks draggable (handle, track). Use active states, color, and visual cues so the user instinctively knows what to do. If an action needs explaining, the affordance is wrong.
 
 ### Agency
 Put people in control. Let them do things their way instead of funneling them down a predetermined path. Offer **forgiveness** — make it easy to undo actions, confirm destructive operations. Agency gives people confidence to explore freely.
@@ -50,6 +52,8 @@ Strip away the unnecessary so the core purpose shines. Simplicity is **not** min
 
 **Obsessive reduction** — start by cutting non-essential elements to avoid decision paralysis. Only reveal complexity when absolutely necessary. **The three-tap rule** — the most important actions should be available within three taps or clicks. Optimize for the common, frequent use cases.
 
+**Master visual hierarchy** — guide the eye, don't just place elements. Use **typography size** (larger = more important), **color weight** (bold/high-contrast for primary actions, muted for secondary), and **spacing** (more space around = more significance). The single biggest tell of amateur design is a flat visual hierarchy where nothing stands out — every element competes equally for attention.
+
 ### Craft
 Attention to detail that tells people you care. Beautiful fonts across devices, thoughtful colors that adapt light/dark, responsive animations with natural feedback, reliable foundations.
 
@@ -60,6 +64,381 @@ Not confetti or tacked-on flourishes. Delight is the **natural result** of getti
 
 **Identify the emotion you want to inspire** — a fitness app might energize, a meditation app might calm, a game might thrill. **Create defining moments** — every interaction is a chance to show what your design stands for. **Don't mistake delight for decoration** — people are trying to accomplish a task; don't let pursuit of delight get in the way of purpose. **Consider the whole** — delight is the culmination of everything: the freedom to act, safety to explore, comfort of familiar metaphors, flexibility across contexts. When you design with intent, focus, and care, the result is naturally delightful.
 
+## Product Design Mindset
+
+Designing a product is different from designing a screen. A screen is a layout; a product is a system of connected flows, states, and decisions. Adopt this mindset to move from surface-level UI to cohesive product design.
+
+### Start with User Intent
+
+Don't begin with icons, colors, or layouts. Begin with one question: **What is the primary action the user needs to take right now?** Every design decision should serve that intent first.
+
+- **One action per view** — identify the single most important thing the user can do on this screen (sign up, create, search, read). Make that action dominant. Everything else — search bars, filters, secondary navigation — augments the core intent as the user's needs expand.
+- **Features are secondary** — resist the urge to cram every capability onto the surface. Serve the primary intent with clarity first, then progressively disclose supporting features as the user signals deeper need.
+
+### Leverage Existing Mental Models
+
+Users have spent over 30 years developing expectations for how interfaces work. Navigation at the top, clickable links are blue, settings in a gear icon — these conventions exist because they work.
+
+- **Follow before you break** — start with established patterns (top nav, left sidebar, bottom tabs on mobile). Users don't have to learn anything new to use your product. Only deviate when the convention truly conflicts with your product's unique needs.
+- **Scale through convention** — designs based on standard patterns are easier to scale, hand off, and adapt across platforms. Novel layouts require more documentation, more testing, and more cognitive effort from every new user.
+
+### Design for All States, Not Just the Happy Path
+
+The happy path (perfect data, no errors, ideal conditions) is the easiest screen to design. Real users live in the other states:
+
+- **Empty states** — guide the user when there's no content yet. Explain what belongs here and how to get started. An empty state is an onboarding moment, not a void.
+- **Loading states** — show shimmer skeletons that mirror the final layout so the user knows what to expect and that something is happening.
+- **Error states** — explain what went wrong in plain language, and offer a clear next step (retry, go back, contact support). Never leave the user stranded with a generic error code.
+- **Success / confirmation states** — confirm the action completed and set up the next logical step. "Team created — now invite your members" is better than a silent success.
+- **Edge cases** — zero results from a search, a network timeout mid-form, data that doesn't fit its container. Every edge case is a design decision, not a developer bug.
+
+If you've only designed the happy path, you've designed 20% of the product.
+
+### Build for Flow, Not Just Sections
+
+Stop thinking in static screens. Think in user sequences — how did the user arrive here, and what do they need to do next?
+
+- **Chained decisions**: Every action creates a next logical step. After creating a team space, prompt the user to add members. After uploading a file, offer to share it. After completing a purchase, show the order status. The product feels intelligent when it anticipates the user's next move.
+- **Entry and exit**: For every screen, ask: where did the user come from? Where can they go? Are those paths obvious? A screen with no clear exit feels like a trap.
+- **Connected flows**: A change in one part of the product (updating a profile, changing a setting) should reflect everywhere that data appears. Inconsistency between screens breaks the illusion of a single product.
+
+### Design Systems as Trust-Building
+
+A design system is not a color palette and a button library. It is the shared language that makes the product feel like one coherent thing rather than a collection of pages built by different people at different times.
+
+- **Consistency builds trust**: When every button, spacing unit, and type style follows the same rules, users stop noticing the UI and focus on the task. Inconsistency forces them to re-learn how to interact on every screen.
+- **Patterns beat novelty**: Reusing the same pattern for similar tasks (always use a modal for create flows, always use a sidebar for navigation) makes the product predictable. Predictable products feel safe and intuitive.
+- **Familiarity across contexts**: A button in the dashboard should look and behave the same as a button in settings. A confirmation dialog should use the same structure everywhere. Users internalize these patterns and navigate faster over time.
+- **Reflect your team's values**: A lean startup needs a flexible, minimal system that doesn't slow experimentation. A large organization needs deep, strict definitions that ensure consistency across dozens of teams. The system serves the team, not the other way around.
+- **Know when to break the rules**: Mastery of a design system means knowing exactly when to follow convention and when to break it with intention. A deliberate deviation (a modal that expands into a full page, a button that animates into a progress bar) is powerful because it's rare. Random inconsistency erodes trust; intentional rule-breaking creates memorable moments.
+
+**The shift**: Stop designing pages. Start designing systems of connected flows, states, and consistent patterns. That is the difference between a UI designer and a product designer.
+
+### Friction as a Design Choice
+
+Not all friction is bad. Intentional friction can prevent errors, encourage better habits, or slow down a high-stakes decision. The key is intent — friction designed to help the user is good; friction designed to trap them is a dark pattern.
+
+- **When to add friction**: Destructive actions (delete, irreversible settings), financial confirmations (purchase, subscription change), or actions that lock the user into a workflow. A confirm dialog, a swipe-to-confirm gesture, or a required deliberate pause serves the user's long-term interest.
+- **When to remove friction**: Login, data entry, navigation, discovery. Every unnecessary click, field, or loading state between the user and their goal is friction that should be eliminated.
+- **Dark patterns to avoid** — forced actions (must disable something to proceed), confirm-shaming ("Are you sure? You'll miss out on..."), hidden costs revealed at checkout, trick dismiss (close button that doesn't close). These erode trust and violate the Agency principle.
+- **Enforce standards with escape hatches**: If your system enforces best practices (naming conventions, required fields, format rules), provide a simple way to toggle the enforcement off. Power users should be able to bypass guardrails after demonstrating understanding.
+- **AI personalization must feel intentional**: Unsolicited automation (randomized suggestions, unexpected changes) erodes trust. Every AI-driven action must be traceable to user behavior or explicitly confirmed. If the user can't explain why the AI did something, the design has failed.
+
+## Apple Human Interface Guidelines
+
+Full platform guidance from [Apple HIG](https://developer.apple.com/design/human-interface-guidelines). **Do not web-search for HIG** — use this section as the source of truth for spacing, patterns, presentation, and platform ergonomics.
+
+**Brand vs platform:** Project design tokens carry color, typeface, and visual signature. HIG carries structural rules — grid, targets, safe areas, hierarchy, patterns, accessibility.
+
+**Relationship to Foundational Design Principles above:** Apple's classic triad (Clarity, Deference, Depth) maps to Purpose, Agency, Simplicity, and Craft. Apply both lenses — HIG for platform-native ergonomics, Foundational Principles for product intent and brand.
+
+---
+
+### Getting started
+
+Design a great experience for any Apple platform — or Apple-aligned web — by starting with:
+
+1. **People first** — what task are they completing? What context (one hand, desk, glance)?
+2. **Platform conventions** — use patterns users already know before inventing new ones.
+3. **Content over chrome** — strip UI to what the task requires; reveal complexity progressively.
+4. **System integration** — respect safe areas, Dynamic Type, dark mode, reduced motion, assistive tech.
+5. **One primary action per screen** — everything else is secondary or tertiary.
+6. **Hicks' Law** — decision time increases with the number and complexity of choices. Make the primary action large, easy to reach, and require minimal movement. Every additional option reduces the likelihood the user will choose any of them.
+
+---
+
+### Design fundamentals — core principles
+
+Apple's three design principles that guide every platform:
+
+| Principle | Meaning | Apply as |
+|-----------|---------|----------|
+| **Clarity** | Text legible at every size; icons precise; adornment subtle | Strong type hierarchy; readable 17px body; meaningful icons |
+| **Deference** | UI helps people understand content — never competes with it | Content-first layout; minimal chrome; translucent floating nav |
+| **Depth** | Visual layers and realistic motion convey hierarchy and vitality | Elevation via materials; spatial transitions; purposeful motion |
+
+---
+
+### Designing for iOS
+
+- **Ergonomics:** One- or two-handed use at ~1ft. Primary actions in thumb-reachable zones (bottom half). Key interactive elements on the right side of the screen by default to accommodate the right-handed majority — the thumb naturally rests on the right edge.
+- **Navigation:** Tab bar (3–5 destinations) · navigation stack with visible back · large titles that collapse on scroll.
+- **Gestures:** Swipe-back to pop stack · swipe actions on list rows · pull-to-refresh where appropriate.
+- **Layout:** Single column default · full-bleed backgrounds · floating blurred chrome over content.
+- **Safe areas:** Always inset from notch, Dynamic Island, home indicator — `env(safe-area-inset-*)`.
+- **Modality:** Sheets and full-screen covers for focused tasks — always dismissible (swipe, ×, Escape on iPad).
+- **Adaptivity:** Support rotation, Split View, Stage Manager; don't assume fixed phone width on iPad.
+
+---
+
+### Designing for macOS
+
+- **Menu bar:** Expose all commands; mirror important actions in toolbar and menus.
+- **Keyboard:** Every major action has a shortcut; Return triggers primary; Escape dismisses.
+- **Pointer:** Hover states expected; smaller targets OK (28pt floor); precise click areas.
+- **Windows:** Resizable, minimizable, full-screen; remember window size/position when reasonable.
+- **Sidebars:** Persistent hierarchy with selection highlight; resizable dividers.
+- **Drag and drop:** First-class for reordering, file attach, cross-app transfer; always offer non-drag fallback.
+
+---
+
+### Foundations
+
+#### Accessibility
+
+- **VoiceOver / screen readers:** Every control has a label; decorative icons `aria-hidden`.
+- **Dynamic Type:** Text scales with user settings — use `rem`, `clamp()`, test at 200% zoom.
+- **Contrast:** WCAG AA — 4.5:1 body, 3:1 large text; provide Increased Contrast variant if needed.
+- **Multiple senses:** Never color-only state; pair with icon, text, or shape.
+- **Motor:** 44×44pt touch minimum; generous spacing between targets; support Switch Control paths.
+- **Cognitive:** Plain language; predictable navigation; undo for destructive actions.
+- **Respect system settings:** Bold text, Reduce Motion, Increase Contrast — never override.
+
+#### App icons
+
+- **Simple, recognizable silhouette** — reads at every size from 16px to 1024px.
+- **No text in icons** unless essential and localized.
+- **Consistent corner treatment** — squircle on iOS; rounded rect on macOS.
+- **Light and dark variants** where platform requires; avoid fine detail that disappears small.
+- **Brand mark ≠ UI chrome** — icon personality stays in the icon, not duplicated across every screen.
+
+#### Color — Four-Layer System
+
+Move beyond 60-30-10. Complex product interfaces need a structured four-layer color architecture:
+
+**Layer 1: Neutral Foundation**
+- Use **multiple subtle background layers** to create depth — distinguish sidebar, main content surface, and elevated cards through lightness, not borders. Aim for 2–4% lightness steps between layers in light mode.
+- **Borders**: Avoid thin black lines (`#000` at low opacity). Use soft, high-lightness neutrals (~85–95% white) to define edges without visual noise. A border should be felt, not seen.
+- **Lose the lines**: Many borders and dividers can be eliminated entirely — spacing alone creates separation. When items are tightly packed and need distinction, use subtle alternating background tints instead of lines between rows. **Line dividers done well**: If you do use lines, make them intentional — rounded caps, low-opacity (~10–20%), and placed only between major content groups (not between every row). A single thin line with rounded ends between sections is a deliberate design choice; a network of hairline borders is noise.
+- **Hierarchy through shade**: Darker neutrals for prominent elements (buttons, headings), lighter neutrals for subtext and disabled states. Typography needs at least 3 neutral steps (primary text, secondary text, disabled/placeholder).
+
+**Layer 2: Functional Accents**
+- **Scale, not a single color**: Treat brand colors as a scale (100–900) rather than one hex value. Use specific steps for specific roles: 500 for primary actions, 600 for hover, 700 for active/pressed, 200 for soft backgrounds.
+- **Double the steps in dark mode**: Dark mode needs more contrast between adjacent shades. If light mode uses 2% lightness differences between steps, use 4–6% in dark mode. Surfaces should **lighten** as they elevate in dark mode (card is lighter than the page background) — the opposite of light mode.
+
+**Layer 3: Semantic Communication**
+- **Break the brand for meaning**: When a button deletes data, it is red — never your brand color. Define dedicated semantic tokens for success, warning, error/info regardless of brand palette. These override all other color rules.
+- **OKLCH for data viz**: For charts and data visualization, use the **OKLCH color system** instead of HSL or RGB. OKLCH produces consistent perceived brightness across hues — bright green won't appear significantly more neon than blue at the same lightness value. This is critical for accessible data visualization where multiple hues sit side-by-side.
+
+**Layer 4: Automated Theming**
+- **Derive themed palettes from neutrals**: Using OKLCH, systematically shift hue while holding lightness and chroma steady. A typical theme derivation: drop lightness by ~0.03 and increase chroma by ~0.02 from the neutral base, then rotate the hue to the target brand color. This produces a thematically consistent set of neutrals without manual tuning.
+- **Test every pair in light and dark** — a passing contrast ratio in light may fail in dark.
+
+**Key principle**: Start with neutrals, not brand colors. A well-structured neutral foundation carries 80% of the visual weight. Brand accents are the seasoning, not the meal.
+
+#### Layout
+
+- **8pt grid** — 4 · 8 · 12 · 16 · 20 · 24 · 32 · 44 · 56pt increments.
+- **Screen insets:** 16–20pt phone · 20–24pt tablet · scale on desktop.
+- **Readable width:** 45–75 characters (~600–720px prose max).
+- **Whitespace hierarchy:** micro 4–8pt · intra-group 12–16pt · inter-group 24–32pt · inter-section 40–80pt.
+- **Safe areas:** Content never under home indicator or notch.
+- **Full-bleed content:** Backgrounds extend to edges; chrome floats above with blur/material.
+
+#### Materials
+
+- **Layering:** Content → controls → modal chrome. Each layer has distinct material.
+- **Translucency + blur:** Nav bars, tab bars, sidebars, sticky headers — `backdrop-filter: blur(20px)` at ~80% opacity.
+- **Vibrancy:** Text and icons on materials adapt contrast automatically (light-on-dark-blur, dark-on-light-blur).
+- **Avoid flat sterile chrome** — subtle depth signals what's tappable vs readable.
+- **Web mapping:** `bg-background/80 backdrop-blur-xl` for sticky bars; solid surfaces for cards.
+- **Light mode shadows**: Use soft, subtle shadows — if the shadow is the first thing you notice, it is too strong. A card should appear to float naturally, not cast a harsh drop shadow. Prefer `box-shadow` with low opacity (8–15%) and generous blur (12–24px) over dense dark shadows.
+- **Dark mode depth**: In dark mode, use **light levels** rather than heavy shadows to create depth. A card sits above a surface by being slightly lighter (lighter gray fill), not by casting a visible shadow. Heavy shadows in dark mode look muddy and artificial.
+
+#### Typography
+
+| Style | Size | Weight | Use |
+|-------|------|--------|-----|
+| Large Title | 34pt | Bold | Hero, large nav titles |
+| Title 1 | 28pt | Bold | Screen titles |
+| Title 2 | 22pt | Bold | Section headers |
+| Title 3 | 20pt | Semibold | Subsections |
+| Headline | 17pt | Semibold | Row titles |
+| Body | 17pt | Regular | Reading content |
+| Callout | 16pt | Regular | Secondary body |
+| Subhead | 15pt | Regular | Supporting labels |
+| Footnote | 13pt | Regular | Metadata |
+| Caption | 11–12pt | Regular | Legal, badges |
+
+- **17pt body** for content meant to be read.
+- **Avoid Ultralight/Thin** — Regular, Medium, Semibold, Bold only.
+- **Negative tracking** on large display; neutral on body.
+- **One display + one body family**; mono for code only.
+- **Kerning large text**: For text above 70–80px, tighten letter spacing to -2% to -4%. At large sizes, default spacing looks disjointed — the visual gaps between letters become more noticeable and need to be reduced.
+
+---
+
+### Patterns
+
+#### Menus
+
+- **Organization:** Frequent items first · 2–3 logical groups · separators between groups.
+- **Labels:** Title case · verb-first · no articles ("Add to Cart" not "Add to the Cart").
+- **Ellipsis (…)** when action needs more input before completing.
+- **Context menus:** Short, relevant list only; mirror items available elsewhere — never exclusive commands.
+- **Submenus:** Max one level · ~5 items · avoid deep nesting.
+- **Toggled items:** Single label that changes ("Show Map" / "Hide Map").
+
+#### Scroll views
+
+- **Content is the hero** — scrolling is the primary navigation mode on phone.
+- **Scroll edge effects:** Subtle blur/fade as content passes under chrome.
+- **Pull-to-refresh:** Branded indicator; don't block content during refresh.
+- **Pagination vs infinite scroll:** Infinite for feeds; pagination when position matters (settings, legal).
+- **Scroll-linked chrome:** Large titles collapse; toolbars hide on scroll down, reveal on scroll up.
+- **Horizontal scroll:** Use for carousels and peekable cards — indicate more content off-screen.
+
+#### Search fields
+
+- **Prominent but integrated** — search bar in nav, command palette (⌘K), or inline filter.
+- **Placeholder:** Describes scope ("Search journeys") not generic "Search".
+- **Instant results** as user types; debounce 200–300ms for network queries.
+- **Recent searches** and suggestions when field is focused and empty.
+- **Scope tokens** when searching subsets (Inbox, All, Archived).
+- **Cancel/dismiss** always visible when search is active on mobile.
+- **Keyboard:** `type="search"`, appropriate `inputMode`; Return submits or selects first result.
+
+#### Sidebars
+
+- **Persistent hierarchy** on iPad/macOS — selection highlighted, badges for counts.
+- **Group by relevance** — primary navigation at top, rarely used items (settings, help, admin) at bottom. This creates a natural scannable structure.
+- **Active state indicator** — a visible marker (colored rectangle, dot, or background fill) on the currently selected item so the user always knows where they are. Essential for collapsible sidebars where labels disappear.
+- **Icons are essential** — if the sidebar collapses to icons-only, every icon must be immediately recognizable. Pair with tooltips for the collapsed state.
+- **Collapsible** on compact width — hamburger or split-view toggle restores it.
+- **Resizable** divider on macOS/iPadOS where appropriate.
+- **Width:** Comfortable label truncation; icons + labels at full width, icons-only when collapsed.
+- **Drag-and-drop** between sidebar and detail for organization tasks.
+
+#### Presentation (modality)
+
+- **Sheets (iOS):** Partial-height for quick tasks; full-screen for immersive focus. Swipe down to dismiss.
+- **Popovers:** Contextual panels anchored to triggering element — desktop and iPad primary pattern.
+- **Alerts:** Critical info or destructive confirmation only — max 2–3 buttons, destructive never primary style.
+- **Full-screen covers:** Media, onboarding, focused multistep flows.
+- **Never stack modals.** Warn before discarding user-entered content on dismiss.
+- **Name the task** in title — user always knows where they are.
+
+---
+
+### Components
+
+Apply HIG component roles alongside project design tokens:
+
+| Component | Rules |
+|-----------|-------|
+| **Buttons** | One primary (filled accent) per view · verb labels · loading state inside · scale(0.97) press |
+| **Toggles / switches** | Immediate effect · label describes ON state · never require Save for toggle |
+| **Segmented controls** | 2–5 mutually exclusive options · equal width segments · short labels |
+| **Sliders** | Live preview of value · numeric label optional · haptic/step feedback on mobile |
+| **Progress indicators** | Determinate when duration known · indeterminate only when unknown · never block entire UI |
+| **Activity indicators** | Inline with content being loaded · branded color OK · pair with skeleton layout |
+| **Labels / badges** | Don't truncate critical info · badges for counts, not decoration |
+| **Lists / tables** | Short row text · sortable columns · alternating rows in wide tables · swipe actions on mobile |
+| **Cards** | Group related content · one primary action · entire card should be clickable if it represents a link or destination · subtle hover effect (fading arrow, scale bump) signals interactivity · hairline border or subtle elevation — not both heavy |
+| **Tab bars** | 3–5 tabs · icon + label · persist selection state · never use for actions (only navigation) |
+| **Toolbars** | Contextual actions for current view · most important trailing on iOS, leading on macOS |
+
+---
+
+### Inputs
+
+- **Single column** on phone — full-width fields, labels above.
+- **Placeholder ≠ label** — always visible or floating label; placeholder shows example format.
+- **Inline validation** — blame-free, actionable ("Use at least 8 characters").
+- **Keyboard type** matches content — `email`, `numeric`, `tel`, `url`.
+- **Return key:** "Next" between fields · "Done"/"Go" on last field.
+- **Secure fields:** Show/hide toggle · never disable paste on password fields.
+- **Pickers / date:** Use native or native-like wheels/menus; avoid free-text for bounded choices.
+- **Text areas:** Auto-grow with content; pin primary CTA above keyboard on mobile.
+- **Disabled state:** Reduced opacity + `pointer-events: none` — never look identical to enabled.
+- **Focus order** follows visual order; visible focus ring for keyboard users.
+- **Chip padding ratio**: For chip components (tags, filters, categories), set vertical padding to half or a quarter of horizontal padding. A chip with 16px horizontal padding should have 4–8px vertical padding. This creates the compact, non-button appearance that distinguishes chips from buttons.
+
+---
+
+### Technologies (web & cross-platform mapping)
+
+| Apple concept | Web / React implementation |
+|---------------|---------------------------|
+| Safe areas | `env(safe-area-inset-*)`, `100dvh` |
+| Dynamic Type | `rem`, `clamp()`, `@media (prefers-contrast)` |
+| Materials / blur | `backdrop-filter: blur(20px)`, `bg-*/80` |
+| Haptics | `navigator.vibrate()` (limited) · RN haptic modules |
+| Dark mode | `prefers-color-scheme`, `.dark` class, semantic CSS vars |
+| Reduce motion | `prefers-reduced-motion: reduce` — fade not slide |
+| VoiceOver | `aria-label`, `role`, live regions |
+| Tab bar | Bottom nav, 44px min height, icon + label |
+| Navigation stack | Route transitions, back button, breadcrumbs |
+| Sidebar | CSS grid / flex split view, collapsible panel |
+| Command palette | ⌘K modal search, keyboard-navigable results |
+| Sheets | Bottom drawer / dialog with swipe dismiss |
+| SF Pro | `-apple-system`, Inter, system-ui substitutes |
+
+---
+
+### Presentation & experience
+
+**Experience principles** — how the product *feels* over time:
+
+| Dimension | Guidance |
+|-----------|----------|
+| **First launch** | Communicate value in first 3 seconds; delay permissions and ratings |
+| **Onboarding** | Teach by doing, not reading; progressive hints at moment of first use |
+| **Loading** | Skeleton mirrors final layout; optimistic UI for reversible actions |
+| **Empty states** | Explain what belongs here + one CTA — onboarding moment, not void |
+| **Errors** | Inline, specific, recoverable; never blame the user |
+| **Success** | Brief confirmation — toast or inline check; don't block flow |
+| **Transitions** | Spatial continuity — user knows where they came from and where they are |
+| **Personalization** | Defaults are sensible; ask preferences in context, not at launch |
+| **Trust** | Transparent data use; destructive actions require confirmation |
+| **Delight** | Earned through craft — not confetti; motion serves feedback, not decoration |
+
+**Three questions every screen must answer instantly:**
+1. **Where am I?** — title, nav highlight, breadcrumb
+2. **What can I do?** — primary action obvious, secondary discoverable
+3. **Where can I go next?** — clear exit, back, or forward path
+
+---
+
+### HIG non-negotiables
+
+| Rule | Value |
+|------|-------|
+| Touch target minimum | 44×44pt (44px web) |
+| Body reading size | 17pt / 17px |
+| Layout grid | 8pt base unit |
+| Screen edge inset | 16–20pt phone, 20–24pt tablet |
+| Primary buttons per view | 1 filled accent maximum |
+| Dark mode | Semantic tokens — not color inversion |
+| Motion | Respect `prefers-reduced-motion` |
+| Safe areas | `env(safe-area-inset-*)` on full-screen mobile views |
+
+### Whitespace quick reference
+
+```
+4px   — icon ↔ label
+8px   — related inline items
+12px  — form field stack gap
+16px  — card padding (mobile), screen margin
+24px  — section gap within screen
+32px  — major group separation
+44px  — minimum control height
+```
+
+### Pre-ship HIG checklist
+
+- [ ] 44pt touch targets on all actions
+- [ ] Safe area insets applied
+- [ ] Body text ≥ 17px for reading content
+- [ ] One primary button per view
+- [ ] Semantic colors adapt to dark mode
+- [ ] Empty, loading, error states designed
+- [ ] `prefers-reduced-motion` respected
+- [ ] Focus rings visible for keyboard users
+- [ ] User can answer: where am I / what can I do / where next
+- [ ] Modals dismissible; destructive never primary
+- [ ] Search, menus, and sidebars follow pattern rules above
+
 ## When to Use
 
 Use this skill when:
@@ -69,6 +448,8 @@ Use this skill when:
 - Styling or beautifying existing web or mobile UI
 - Designing web artifacts, posters, or interactive pages
 - The user wants creative, non-generic frontend work
+- Designing mobile-first layouts, login/onboarding, or native-feeling web/macOS UI
+- User mentions Apple HIG, SF Pro rhythm, safe areas, or 44pt targets
 
 Do not use this skill when:
 - The task is purely backend logic without UI
@@ -86,7 +467,10 @@ Do not use this skill when:
 
 ## Workflow
 
+0. **Platform ergonomics** — For mobile, auth, onboarding, or macOS-style UI: apply the **Apple Human Interface Guidelines** section above. Merge HIG spacing/targets with project tokens (e.g. `docs/design/DESIGN.md`) if present.
+
 1. **Design Thinking Phase** — Before coding, understand context and commit to a BOLD aesthetic direction. Run each decision through the Foundational Design Principles above:
+   - **Brand colors**: Ask the user for their brand colors (or have them pick from 2-3 suggestions). If they have none, propose a direction: pull from the product's subject matter (medical = clean blues, gaming = saturated neons), industry convention, or an adjacent successful product's palette. Then build a **four-layer color system**: neutrals (backgrounds, borders, text hierarchy) → functional accent scale (100–900 for interactive states) → semantic tokens (success/warning/error) → themable outputs. Neutrals first, brand accents second.
    - **Purpose**: What problem does this solve? Who uses it? Does every feature earn its place, or does it waste the user's time/attention/trust?
    - **Agency & Forgiveness**: Where does the user have control? Can they undo mistakes? What happens if they go off the intended path?
    - **Safety & Responsibility**: Could any feature be misused or cause harm? How does the UI protect privacy and prevent errors?
@@ -101,6 +485,8 @@ Do not use this skill when:
    - **Differentiation**: What makes this UNFORGETTABLE? Define a simple, bold visual signature that makes the app instantly recognizable.
    - **Three Core Navigation Questions**: Can a user immediately answer "Where am I?", "What can I do?", and "Where can I go from here?" — if not, simplify the navigation structure until they can.
    - **Form Follows Function**: Start with constraints, ergonomics, and user goals — don't begin with styling. Define the functional requirements deeply enough and the form emerges naturally.
+   - **Sketch user flows on paper first**: Before opening Figma or writing code, sketch the user journey across screens. Identify gaps — missing navigation, absent skip buttons, empty states not designed, search bars forgotten. Paper sketches are cheap to change and reveal structural problems before pixels are involved.
+   - **Skip buttons** — every interstitial, onboarding step, or tutorial must have an obvious skip/dismiss option. Forcing users through content they don't need violates agency.
    - **Muscle Memory**: Can key actions become intuitive through repetition? Design for gradual learning — major UX changes should be introduced progressively so users build muscle memory over time.
 
 2. **Implementation Phase** — Build working code that is:
@@ -118,7 +504,7 @@ Do not use this skill when:
    - Craft loading and empty states as intentional design moments
    - Review against all 8 Foundational Design Principles — does every decision serve a purpose, give agency, feel familiar, etc.?
 
-4. **Verification Phase** — Verify against the Quality Bar below.
+4. **Verification Phase** — Verify against the Quality Bar below and the **Pre-ship HIG checklist** in the Apple HIG section.
 
 ## Output Format
 
@@ -127,6 +513,45 @@ Functional, production-ready frontend code (HTML/CSS/JS, React, Vue, React Nativ
 - Has a distinctive, non-generic aesthetic
 - Includes all necessary styling and interactive elements
 - Implements the premium polish elements appropriate to the platform
+
+## AI-Assisted Mockups & Presentation
+
+Use AI image generation to produce high-fidelity context-rich mockups that present your UI in realistic environments — a complement to, not replacement for, the coded interface.
+
+### Mockup Prompt Technique
+- **Describe device + environment + lighting**: "A MacBook Pro on a walnut desk with a ceramic coffee mug, soft window light, shallow depth of field." Specific environments (orange faux leather chair, concrete floor, moody natural light) produce more credible results than generic "on a desk."
+- **Include aesthetic modifiers**: "Soft shadows, blurred background, warm tone, 85mm lens" — these tell the AI to produce the photographic quality that sells the mockup.
+- **Generate the base scene first**, then composite your UI screenshot onto the screen area. AI-generated screens are rarely pixel-accurate; overlaying your real UI guarantees fidelity.
+
+### AI for Atmospheric Details
+- Use AI to generate environmental texture that's tedious to create manually — fabric wrinkles, surface scratches, water stains, concrete cracks, wood grain. These small imperfections are what make a mockup feel like a photograph rather than a render.
+
+### Combine Mockups with Prototyping
+- Use the AI-generated environment as the hero image for client presentations, portfolio case studies, or marketing landing pages.
+- Pair it with a **functional prototype** (Figma, Framer, or coded interactive demo) that demonstrates real interactions — swipe gestures, modal transitions, hover states, animations. The mockup sells the context; the prototype sells the experience.
+- The gold standard: a hero section showing the UI in a lived-in environment, linked to a clickable prototype or video walkthrough. Clients believe what they can see in context.
+
+### E-Commerce Specific
+- For product pages, generate mockups showing items in realistic use settings (a shirt on a person in natural light, a gadget on a desk with accessories). The difference between a white-background product shot and a contextual lifestyle image is often the difference between browsing and buying.
+
+### AI Code-to-Design Workflow
+Generate real UI code with AI, then bring it into design tools for refinement.
+
+- **Reference selection**: Provide the AI with a clean, professional reference (Linear, Notion, Superhuman) to guide the aesthetic. Avoid overly complex Dribbble shots — too many conflicting details confuse AI output.
+- **Component libraries**: Use platforms like 21st.dev for pre-made AI-ready components. Copy the code or the prompt directly to maintain high design standards.
+- **Prompt structure**: Ask the AI for HTML+CSS (not vague "design"), clearly state the purpose ("project management dashboard with sidebar, navbar, Gantt chart"), and specify the icon library ("use Lucide icons, not emojis").
+- **Figma conversion**: Download the AI output as an HTML file, then use the Figma plugin "html.to.design" to import it. Toggle "components" and "hover effects" in the import settings to preserve interactivity.
+- **Post-AI polish**: AI output needs manual refinement — fix line heights and spacing, adjust colors for cohesion (e.g., shift purples toward your brand blue), ensure background contrast is balanced, and replace placeholder data with real values.
+
+### 3D & Immersive Design
+
+3D elements elevate perceived value — users often find 3D visuals so engaging that they overlook minor UI imperfections.
+
+- **No-code 3D tools**: Spline (Figma-like interface, lowest barrier to entry) and Blender (full-featured, steeper learning curve) are the primary tools. Dedicate a few hours to learning the basics — the skillset differentiates you from designers who only work in 2D.
+- **Standard pipeline**: Start with vector assets (SVGs) in Figma → import into 3D tool for extrusion, texturing, and animation → export as optimized web formats (glTF, USDZ) or Lottie. This keeps the design workflow clean and the assets portable.
+- **Use 3D to reduce UI chrome**: A hero section with a compelling 3D scene needs less traditional UI decoration — the 3D asset carries the visual weight. Let the 3D element replace decorative backgrounds, illustrations, or hero imagery rather than adding it on top of an already busy layout.
+- **Performance is non-negotiable**: Complex 3D must be mobile-optimized. Reduce polygon counts, use compressed textures, and test on mid-range devices. If the 3D element drops frame rate below 60fps, simplify or replace it.
+- **Progressive enhancement**: Load a static fallback (image or low-poly preview) first, then upgrade to the full 3D experience on capable devices. Never block content behind a 3D loading state.
 
 ## Frontend Aesthetics Guidelines
 
@@ -138,6 +563,7 @@ Apply these guidelines through the lens of the Foundational Design Principles �
 
   **Font Loading & Performance**: Preload critical fonts via `<link rel="preload">` with `crossorigin`. Use `font-display: swap` in `@font-face` so fallback text renders immediately then swaps. Subset fonts to needed glyph ranges. Prefer variable fonts (single file, multiple weights). For Google Fonts, append `&display=swap` and limit to 2–3 families. Use `size-adjust` in `@font-face` to normalize fallback metrics and prevent layout shift (CLS).
 - **Color & Theme**: Commit to a cohesive aesthetic. Use CSS variables. Dominant colors with sharp accents outperform timid palettes. Prefer **semantic colors** named after their purpose (label, background, separator) rather than their appearance — they auto-adapt to light/dark mode, contrast settings, and accessibility. Avoid hard-coding color values. For Dark Mode, do **not** simply invert colors — adjust hues and saturation so the palette feels refined in both modes, avoiding harsh high-contrast opposites. Test every color in both light and dark environments. A restrained monochrome palette can reinforce a cohesive "monolith" feel — consistent material integrity keeps focus on form over decoration.
+  - **Use OKLCH for color systems**: Where possible, author color scales in OKLCH (OKLAB Lightness, Chroma, Hue) instead of HSL or RGB. OKLCH produces consistent perceived brightness across hues — a blue and a green at the same L value appear equally luminous. This is essential for data viz, theming, and dark mode derivation. Tools: `culori` (JS), `colorjs.io`, OKLCH color picker at oklch.com.
 
   **Accessibility: Color Contrast & Control Sizes**
   Color contrast is measurable. Every text element must meet minimum contrast ratios for legibility.
@@ -512,151 +938,80 @@ Treat the empty state as a designed screen, not a default. Consider illustration
 
 ### 6. Drag & Drop
 
-Drag-and-drop makes interactions feel tangible, direct, and natural. Support it broadly — for reordering, moving between containers, attaching files, organizing content.
+Drag and drop is an intuitive, direct-manipulation pattern for reordering, organizing, or moving content. Support it as a power-user enhancement while always providing non-drag alternatives.
 
-- **Move vs copy semantics**: Dragging within the same container typically **moves** content; dragging to a different container or app **copies** it. On desktop, holding Option/Alt forces copy.
-- **Visual feedback**: Show a drag preview (a semi-transparent clone) as soon as the user drags ~3px. Translucency distinguishes preview from original and lets people see destinations underneath.
-- **Drop targets**: Highlight valid destinations on hover; show no feedback (or "not allowed") over invalid ones. Remove highlighting when the item drags away.
-- **Reordering**: Show a gap or placeholder where the item will land. Animate adjacent items shifting to make room as the user drags.
-- **Spring physics**: Snap into place with slight overshoot at drop, not a teleport.
-- **Multi-item drag**: Support dragging multiple selected items. Show a badge counter during multi-item drag so people know how many items are in transit.
-- **Undo support**: Let people undo a drop — they may drop in the wrong destination. Prefer confirmation when the operation can't be reversed.
-- **Fallback alternatives**: Always provide non-drag alternatives (copy/paste, menu commands) — drag-and-drop is sometimes impossible or inconvenient.
+- **Every draggable item announces itself** — cursor change on hover, subtle lift on drag start (scale + shadow). The user should know an item is draggable before attempting to drag it.
+- **Visual feedback during drag** — the dragged item follows the cursor/finger with a slight elevation (shadow + scale ~1.02). The drop target highlights with a clear indicator (insertion line, highlighted zone, or outline).
+- **Haptic feedback on mobile** — light haptic on pick-up, confirmation haptic on successful drop, error haptic if the drop is rejected.
+- **Smooth drop animation** — the item animates to its new position with a spring curve (not instant snap). Surrounding items animate out of the way with layout animation.
+- **Always offer non-drag fallback** — context menu "Move to...", keyboard reorder (up/down arrows + Cmd+Shift+arrow), or explicit "Edit order" mode with drag handles.
 
 | Platform | Approach |
 |----------|----------|
-| CSS/Web | HTML Drag and Drop API, or libraries like `react-beautiful-dnd`, `dnd-kit`, `SortableJS` |
-| React | `dnd-kit` (modern, flexible, accessible), `react-beautiful-dnd` (maintained legacy) |
-| React Native | `react-native-draggable-flatlist` for lists, `PanResponder` or `GestureHandler` for custom drag |
+| CSS/Web | `dragstart`/`dragover`/`drop` events, `@dnd-kit/core` for accessible React DnD |
+| React | `@dnd-kit` (modern, accessible, keyboard-support), `react-beautiful-dnd` (legacy) |
+| React Native | `react-native-draggable-flatlist` with haptic feedback on pick-up/drop |
 
-## Quality Bar
+## Verification & Quality Bar
 
-The result is good only if:
-- It avoids generic AI aesthetics (no Inter/Roboto, no purple gradients on white, no cookie-cutter layouts)
-- There is a clear, intentional aesthetic direction
-- Typography choices are distinctive and well-paired
-- Color palette is cohesive and bold, not timid
-- Layout has character (asymmetry, overlap, or intentional spacing)
-- Code is functional and production-grade
-- Every design choice feels intentional, not default
-- Every tappable element has press-state feedback (scale, opacity, or ripple)
-- Motion is purposeful and restrained, not chaotic or absent
-- Haptic feedback is used where meaningful (platform-permitting)
-- Keyboard behavior is integrated, not an afterthought
-- Empty and loading states are designed as intentional moments, not blank screens
-- **Purpose**: Every feature, screen, and element earns its place — nothing is there by default or "just in case"
-- **Agency**: User can undo mistakes and recover from errors; interface doesn't force a single path
-- **Responsibility**: Privacy is respected; AI features have safeguards against harmful output; destructive actions require confirmation; design considers longevity and sustainability
-- **Familiarity**: Metaphors are used correctly (trash means delete); consistent elements behave consistently
-- **Flexibility**: Layout adapts across devices and orientations; supports accessibility features; offers personalization where possible
-- **Simplicity**: Strong visual hierarchy guides attention to what matters most; plain language, not jargon; minimal steps to complete tasks
-- **Content-First**: Controls and chrome are minimized so content takes center stage; progressive disclosure hides complexity until needed
-- **System Integration**: App uses popovers, notifications, or command palettes to appear contextually rather than as a standalone destination
-- **Drag & Drop**: Reordering, file attachment, and item organization support drag-and-drop with visual preview and drop zone feedback
-- **Dark Mode**: Color palette is thoughtfully adjusted (not just inverted) for dark environments — no harsh high-contrast opposites
-- **Dark Mode imagery**: Icons, illustrations, and full-color images get separate light/dark treatment — dark details don't disappear against dark backgrounds; interface symbols with similar colors to the background get subtle borders for edge definition
-- **Onboarding**: Hidden power features (shortcuts, gestures, drag-and-drop) are introduced through onboarding or progressive tooltips
-- **Narrative & Storytelling**: Visual assets, animations, and layouts build a cohesive story that communicates product value
-- **Confident White Space**: Content has room to breathe — elements aren't crammed together; negative space is used deliberately to direct focus
-- **Structured-Exploratory Layout**: Grid-grounded but with staggered, broken, or masonry arrangements for visual interest
-- **Squircle Geometry**: Icons, cards, and containers use true continuous curvature (superellipse) rather than basic rounded rectangles with harsh breakpoints
-- **Natural Visual Cues**: Gradients, shadows, and translucency are used to mimic real-world light perception — interface feels alive, not sterile and flat
-- **Brand Expression**: Design balances platform consistency with distinctive visual energy; conventions are broken intentionally and meaningfully
-- **Brand Ethos**: Interface communicates a clear values-driven identity — users connect with what it stands for, not just what it does
-- **Visual Signature**: There is a simple, bold visual motif that makes the interface instantly recognizable
-- **Monolith Unity**: The interface reads as one cohesive object — continuous surfaces, harmonized details, consistent material throughout
-- **Strategic Contrast**: The balance between continuous curves (approachability) and sharp cuts (precision) is intentional and meaningful
-- **Semantic Colors**: Colors are named by purpose and auto-adapt to light/dark mode, contrast, and accessibility — no hard-coded values
-- **System Text Styles**: Typography uses a clear hierarchical scale that respects user text-size accessibility preferences
-- **Three Core Questions**: User can immediately answer "Where am I?", "What can I do?", and "Where can I go from here?"
-- **Content Organization**: Data is grouped by logical themes (time, progress, patterns); lists vs collections chosen appropriately for content type
-- **Accessibility**: Supports multiple senses, adopts platform accessibility APIs, allows text size and density customization
-- **Three-Tap Rule**: Most important actions reachable within three taps/clicks; common use cases are optimized over edge cases
-- **Physics-Based Motion**: Interactions mirror real-world physics (weight, momentum, friction) — interfaces feel alive, not mechanical
-- **Spatial Continuity**: Animated transitions help users map where they are; interface feels like a coherent space, not disconnected screens
-- **Form Follows Function**: Design starts from constraints and user needs, not styling — aesthetic emerges naturally from resolved function
-- **Guided Behavior**: Users learn through visual hints and design patterns rather than tutorials or documentation
+Before considering the implementation complete, run through this checklist. Every item must be addressed — even if the answer is "not applicable given scope."
 
-## Platform Considerations
+### Core Functionality
+- [ ] Does the implementation fulfill the core user requirement?
+- [ ] Are all interactive elements functional (buttons, links, forms, toggles)?
+- [ ] Does it handle the primary user flow end-to-end without errors?
+- [ ] Are there no console errors or warnings in the target environment?
 
-Each platform has unique characteristics that should inform your design decisions. The following guidance helps your interface feel at home on each device.
+### Responsiveness & Adaptivity
+- [ ] Does the layout work at the target breakpoints (mobile, tablet, desktop)?
+- [ ] Is content readable without horizontal scrolling on the smallest target device?
+- [ ] Are touch targets at least 44×44pt on mobile?
+- [ ] Does the layout adapt gracefully between portrait and landscape on mobile?
 
-### Layout Foundations (All Platforms)
-- **Safe areas** — inset content from dynamic system features (notches, camera housings, status bars, corner radii) so nothing is clipped.
-- **Adaptability** — interfaces must respond to screen size changes, orientation switches, text-size adjustments, and feature availability (external displays, multitasking). Use responsive layout tools (CSS Grid/Flexbox, flexbox) rather than fixed positions.
-- **Full-bleed content** — extend backgrounds and artwork to screen edges. Let navigation chrome (tab bars, sidebars, toolbars) float above content using translucency/materials, with scroll edge effects that blur background content as it passes underneath.
-- **Visual hierarchy** — place items by importance: top-to-bottom, leading-to-trailing in reading order. Group related items using negative space, background shapes, or separators. Differentiate controls from content structurally (controls float above, content fills the space).
+### Accessibility
+- [ ] Are all interactive elements keyboard-accessible (Tab, Enter, Escape)?
+- [ ] Do visible focus rings appear when navigating by keyboard?
+- [ ] Are all images, icons, and controls labeled (`aria-label`, `alt` text)?
+- [ ] Is color contrast WCAG AA compliant for all text (4.5:1 body, 3:1 large)?
+- [ ] Is `prefers-reduced-motion` respected — no motion-only information?
+- [ ] Has the color-only state check been done? (no green-only success, red-only error)
 
-### Phone (Mobile)
-- **Ergonomics**: People hold the device in one or both hands, typically at close viewing distance (~1ft). Reachable controls should be in the middle or bottom area of the display.
-- **Inputs**: Multi-Touch gestures, virtual keyboards, voice control. Support swipe-to-navigate-back and swipe-to-initiate-actions in list rows.
-- **Interactions**: Sessions range from quick checks (seconds) to extended use (hours). People switch between multiple apps frequently.
-- **Adaptation**: Support device orientation changes, Dark Mode, and system text-size preferences seamlessly.
-- **Controls**: Limit onscreen controls to reduce clutter; make secondary actions discoverable through minimal interaction.
+### Motion & Interactions
+- [ ] Do all tappable elements have press-state feedback (scale, opacity, or ripple)?
+- [ ] Are transitions purposeful and under 400ms?
+- [ ] Is there no gratuitous animation that distracts from functionality?
 
-### Laptop (Desktop)
-- **Display**: Large, high-resolution displays with potential for multiple monitors. Present more content in fewer nested levels.
-- **Ergonomics**: Stationary use at a desk, viewing distance ~1-3ft. Support window resize, hide, show, move, and full-screen mode.
-- **Inputs**: Physical keyboard, pointer (mouse/trackpad), voice. Support keyboard shortcuts for every major action and keyboard-only work styles.
-- **Personalization**: Let users customize toolbars, configure window views, and choose interface colors and fonts.
-- **Menu bar**: Provide access to all commands the app offers through standard menu bar menus.
+### States Coverage
+- [ ] **Loading state**: Skeleton or spinner shown while content loads.
+- [ ] **Empty state**: Meaningful message + CTA when no content exists.
+- [ ] **Error state**: Inline, blame-free error message with recovery action.
+- [ ] **Edge cases**: Long text, missing data, rapid interactions handled gracefully.
 
-### Tablet (Large Screen)
-- **Display**: Large, high-resolution display supporting multitasking (split view, slide over).
-- **Ergonomics**: Often held, sometimes set on a surface or stand. Viewing distance up to ~3ft.
-- **Inputs**: Touch, physical keyboard, stylus, pointing device, voice — often used in combination. Consider unique multi-input interactions.
-- **Multitasking**: Minimize modal interfaces and full-screen transitions. Support drag and drop between apps.
-- **Adaptation**: Transition smoothly across device orientations and multitasking modes. Consider seamless cross-device continuation.
+### Polish & Detail
+- [ ] Is the typography hierarchy clear and intentional?
+- [ ] Are colors harmonious in both light and dark mode (where applicable)?
+- [ ] Do shadows, borders, and spacing follow consistent rules?
+- [ ] Is the icon set consistent in stroke, weight, and style?
+- [ ] Are there hard-coded strings that should be externalized?
 
-## Failure Modes
+### Platform Integration (Apple-aligned / mobile)
+- [ ] Safe areas respected (notch, Dynamic Island, home indicator).
+- [ ] Keyboard-aware layout (CTA buttons not hidden behind keyboard).
+- [ ] Gesture dismissal for modals (swipe down, tap backdrop).
+- [ ] Dark mode tested with semantic tokens (not color inversion).
+- [ ] Search, menus, sidebars follow HIG pattern rules above.
 
-Avoid:
-- Generic font families: Inter, Roboto, Arial, system fonts
-- Cliched color schemes: particularly purple gradients on white backgrounds
-- Predictable layouts and component patterns
-- Cookie-cutter design that lacks context-specific character
-- Timid, evenly-distributed color palettes
-- Converging on common choices (Space Grotesk, etc.) across generations
-- Flat, feedback-dead UI — no press states, no hover, no active indicators
-- Over-animation or motion without purpose — animations that distract rather than guide
-- Empty states showing raw "No data" or nothing at all
-- Keyboard-obstructed CTAs on mobile or form-heavy screens — the most common tell of a non-premium app
-- Using default system spinners and indicators without branding them to the app's aesthetic
-- **No purpose**: Features, modals, or screens added without a clear reason — wasting user time and attention
-- **No agency**: Forcing users down a single path; no undo capability; no way to recover from mistakes
-- **No responsibility**: Ignoring privacy; shipping AI features without safeguards against harm; no confirmation on destructive actions
-- **No familiarity**: Reinventing standard metaphors (trash = something other than delete); inconsistent behavior for similar-looking elements
-- **No flexibility**: Fixed layout that breaks on different devices or orientations; ignoring accessibility; no personalization options
-- **No simplicity**: Flat hierarchy where nothing stands out; jargon-heavy copy; bloated multi-step flows for simple tasks
-- **No narrative**: Visuals feel random or disconnected — no cohesive story tying design choices together
-- **No white space**: Cramped, dense layouts where nothing can breathe, overwhelming the user
-- **Timid grid**: Strict, rigid grid with no exploration — predictable rows and columns with no staggered or masonry breaks
-- **Sharp / broken curves**: Using basic `border-radius` with visible breakpoints instead of true continuous curvature; mixing true squircles with low-quality rounded rectangles in the same interface
-- **Sterile flatness**: Completely flat interface with no gradients, shadows, or translucency — feels cold and uncomfortable to use over time
-- **Blind consistency**: Following platform guidelines so rigidly that the brand's unique visual energy is erased; no intentional deviations for expression
-- **No brand ethos**: The interface is functional but has no soul — nothing communicates what the product stands for beyond its feature set
-- **Disjointed composition**: Interface reads as scattered cards, panels, and sections rather than one cohesive object — no unifying visual mass or material consistency
-- **Hard-coded colors**: Using fixed color values that don't adapt to light/dark mode or accessibility contrast settings
-- **No text-size scaling**: Fixed text sizes that ignore user accessibility preferences — text doesn't scale with system settings
-- **Confusing navigation**: User cannot quickly answer "Where am I?", "What can I do?", or "Where can I go from here?"
-- **Mixed content types**: Lists and grids combined in the same section without clear separation, creating visual clutter
-- **Accessibility as an afterthought**: Only visual interaction mode supported; no screen reader labels, no keyboard navigation, no text size customization
-- **Deep navigation**: Important actions buried more than three taps deep; edge cases prioritized over common flows
-- **Mechanical motion**: Animations are linear, weightless, and lack physics — interfaces feel robotic rather than alive
-- **Disconnected screens**: No spatial transitions between views; users lose orientation when navigating between screens
-- **Decoration-first design**: Styling applied before functional constraints are resolved — form disconnected from purpose
-- **Tutorial dependency**: Users must read instructions or watch walkthroughs to understand basic navigation rather than learning through visual cues
-- **No RTL support**: Interface doesn't mirror for right-to-left languages — text alignment wrong, back buttons point wrong direction, icons not flipped
-- **No localization readiness**: Hardcoded strings, no text expansion space, culture-specific idioms that don't translate
-- **Vague permission prompts**: Asking for access at launch with unclear purpose strings — erodes trust before the user sees value
-- **Color-only differentiation**: Status, state, or data visualization relies solely on color without shape/icon/text alternatives
-- **Exclusionary imagery or language**: Only one body type, skin color, or gender represented; culture-specific metaphors that alienate global users
+### Performance
+- [ ] Fonts loaded with `font-display: swap` and preloaded.
+- [ ] Images lazy-loaded or appropriately sized.
+- [ ] No layout shift (CLS) from late-loading fonts or images.
+- [ ] 3D / heavy assets have progressive fallback (static image first).
 
-## Improvement Loop
+## Appendices
 
-If output is weak:
-1. Identify which failure mode occurred
-2. Strengthen the aesthetic direction constraints
-3. Add more specific guidance about differentiation
-4. Check whether any of the six polish elements are missing
-5. Test with the same prompt to verify improvement
+### AI Usage Notes
+
+1. This skill includes content from Apple Human Interface Guidelines. Do not web-search for HIG — the relevant sections are embedded above.
+2. When the user mentions specific brands or color palettes, import them as the four-layer color system, not as isolated hex values.
+3. The AI-Assisted Mockups section is for presentation/deck work only — the primary deliverable is always working code.
+4. Product Design Mindset section should be referenced when the user asks about product strategy, flow, or architecture — not just surface UI.
