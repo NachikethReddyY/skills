@@ -1,0 +1,50 @@
+{
+  "skill_name": "teach",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/teach me MCP for building AI agents",
+      "expected_output": "Interview for measurable mission -> write MISSION.md with concrete outcomes -> propose a project (e.g. 'Build an MCP server') -> derive knowledge gaps from project -> check CONFUSIONS.md -> create first lesson on JSON-RPC with [[wiki-links]] to at least 3 existing concepts -> assign a prove-it challenge -> update SKILL-GRAPH.md -> schedule spaced reviews -> add connection to CONNECTIONS.md"
+    },
+    {
+      "id": 2,
+      "prompt": "What's the difference between tools and resources in MCP?",
+      "expected_output": "If user has an active teaching workspace: check CONFUSIONS.md, see if this is already tracked as a confusion. If yes, prioritize it as the next lesson. Design a short lesson that answers the question and links to [[MCP Tools]], [[MCP Resources]], [[JSON-RPC]]. Add a challenge. If no workspace exists: just answer the question concisely (don't fire teach)."
+    },
+    {
+      "id": 3,
+      "prompt": "I want to learn Rust but I already know Python and C",
+      "expected_output": "Establish mission with measurable outcomes -> check if this needs a new workspace -> set up MISSION.md, SKILL-GRAPH.md, KNOWLEDGE_MAP.md -> propose a project (e.g. 'Build a CLI tool in Rust') -> derive knowledge gaps (ownership, borrowing, lifetimes, mapped from Python GC/C pointers) -> check what the user already knows and set proficiency levels -> create first lesson with [[connections]] to Python and C knowledge -> assign challenge -> schedule reviews"
+    },
+    {
+      "id": 4,
+      "prompt": "Review JSON-RPC — it's been 7 days",
+      "expected_output": "Check REVIEWS/ for Day 7 review of JSON-RPC. Open the review template. Ask retrieval questions from memory (not re-reading). Include cross-domain connection prompt. Grade result. If fail, drop proficiency in SKILL-GRAPH.md and schedule re-lesson."
+    },
+    {
+      "id": 5,
+      "prompt": "What should I learn next?",
+      "expected_output": "Only fire if MISSION.md and SKILL-GRAPH.md exist. Read both -> check CONFUSIONS.md for high-priority items -> check knowledge gaps in active PROJECT -> propose next lesson with rationale tied to mission. If no mission exists, ask for one instead of guessing."
+    },
+    {
+      "id": 6,
+      "prompt": "Can you explain how Redis caching works?",
+      "expected_output": "If user has an active teaching workspace: check if [[HTTP Caching]] or [[React Query]] already exists in SKILL-GRAPH.md. If yes, design lesson with connections to those existing concepts. If no: just answer concisely. Check if user wants a full teaching session or just a quick explanation."
+    },
+    {
+      "id": 7,
+      "prompt": "/teach me this codebase — I want to understand the build system",
+      "expected_output": "Detect Mode B (code repo). Create .learn/ directory. Search for DESIGN.md/README.md in repo root. Generate HDL.md from existing docs. Load design-ui skill. Interview for measurable mission -> write MISSION.md -> map project (e.g. 'Modify the build pipeline') -> derive lessons from build system architecture -> check CONFUSIONS.md -> create first lesson with [[wiki-links]] to HDL components"
+    },
+    {
+      "id": 8,
+      "prompt": "I'm in my learning vault and want to study system design",
+      "expected_output": "Detect Mode A (dedicated learning repo — MISSION.md exists). Skip .learn/ creation. Load existing workspace. Check HDL.md if present. Proceed with mission, skill graph, and ZPD from existing learning records."
+    },
+    {
+      "id": 9,
+      "prompt": "Teach me about the authentication flow in this project",
+      "expected_output": "Detect Mode B. Create .learn/. Search for DESIGN.md in repo root -> if found, extract auth section into HDL.md. If not, interview user and generate HDL. Create lesson on auth flow with [[wiki-links]] to HDL components. Use design-ui for any HTML reference docs."
+    }
+  ]
+}
