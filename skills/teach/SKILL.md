@@ -83,7 +83,7 @@ The core teaching principle. Always teach where the user is perfectly challenged
 
 Every file has frontmatter (`tags`, `aliases`) and `[[wiki-links]]` to related concepts. Use `#topic/{name}` and `#type/{lesson|record|mission|references|glossary}`.
 
-**Important:** The format templates in `references/` do NOT show frontmatter in their examples — but when the agent creates the actual file, it MUST include frontmatter. The templates show only the content structure.
+**Note:** The format templates in `references/` include frontmatter in their code blocks. When creating files, always include frontmatter matching the file's type and topic.
 
 ## Design UI
 
@@ -117,4 +117,4 @@ Per-topic in `{topic}/glossary.md` via `references/GLOSSARY-FORMAT.md`. Add term
 
 ## NOTES.md
 
-Record preferences, things to watch for, any adjustments to approach. Refer back before each session.
+One global file at `{root}/notes.md`. Stores preferences, things to watch for, and adjustments that apply across all topics. Per-topic observations go in `{topic}/records/`. Refer back before each session.
