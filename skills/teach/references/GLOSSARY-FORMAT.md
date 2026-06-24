@@ -5,6 +5,11 @@
 ## Structure
 
 ```md
+---
+tags: [topic/{name}, type/glossary]
+aliases: ["{Topic} Glossary"]
+---
+
 # {Topic} Glossary
 
 {One or two sentences describing the topic.}

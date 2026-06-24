@@ -5,6 +5,11 @@
 ## Structure
 
 ```md
+---
+tags: [topic/{name}, type/references]
+aliases: ["{Topic} References"]
+---
+
 # {Topic} References
 
 ## Knowledge

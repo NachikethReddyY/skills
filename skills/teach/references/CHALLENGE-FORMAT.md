@@ -5,6 +5,11 @@ Challenges prove skill. A concept is not learned until a challenge is completed.
 ## Template
 
 ```md
+---
+tags: [topic/{name}, type/challenge]
+aliases: ["Challenge: {Name}"]
+---
+
 # Challenge: {Name}
 
 ## Concept

@@ -5,6 +5,11 @@ Records live in `{topic}/records/` and use sequential numbering: `0001-slug.md`,
 ## Template
 
 ```md
+---
+tags: [topic/{name}, type/record]
+aliases: ["Record: {Short title}"]
+---
+
 # {Short title}
 
 **Lesson:** [[../lessons/NNNN-name.html]]

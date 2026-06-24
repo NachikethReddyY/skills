@@ -15,34 +15,65 @@ The user wants to learn something over multiple sessions.
 
 ## Two Modes
 
-- **Mode A (Obsidian vault):** workspace root is the current directory
-- **Mode B (code repo):** creates `.learn/` at repo root, references codebase docs
+- **Mode A (Obsidian vault):** workspace root is `teaching/` (or `learning/`). Use when learning a topic for its own sake inside a personal knowledge base. All files are visible, linkable via `[[wiki-links]]`.
+- **Mode B (standalone / code repo):** workspace root is `.teach/` at the project or repo root. Use when learning inside a codebase where you don't want artifacts cluttering the source tree.
 
-Detection: MISSION.md exists → A. `.learn/` exists → B. Otherwise → create `.learn/`.
+### Detection
+
+1. If `teaching/` exists → Mode A, root is `teaching/`
+2. If `learning/` exists → Mode A, root is `learning/`
+3. If `MISSION.md` exists in current dir → Mode A, root is current dir
+4. Otherwise → Mode B, create `.teach/` at repo root
+
+For Mode B, also check if `.learn/` already exists (legacy name) and use it if found.
 
 ## Workspace Layout
 
 ```
-teaching/
+{root}/
+├── _index_.md            # orientation — what each file does
 ├── notes.md              # preferences, things to watch for
 ├── knowledge-map.md      # collates everything across topics
 ├── reference/            # cheat sheets, syntax refs (HTML)
-├── assets/
-├── Tailwind/
+├── assets/               # reusable lesson components
+├── {topic}/
 │   ├── lessons/          # HTML files
 │   ├── records/          # journals, feedback per lesson
 │   ├── references.md     # every source used
 │   ├── mission.md        # what to learn this topic
 │   └── glossary.md       # terminology
-└── react/
-    ├── lessons/
-    ├── records/
-    ├── references.md
-    ├── mission.md
-    └── glossary.md
+└── {other-topic}/
+    └── ...
 ```
 
-Mode B mirrors this inside `.learn/`.
+`{root}` is `teaching/`, `learning/`, `.teach/`, or `.learn/` depending on mode.
+
+## _index_.md
+
+Created at `{root}/_index_.md` during setup. Lists every file and what it does, plus links to each topic. Acts as a table of contents for the workspace. The agent writes it once and updates it when new topics are added.
+
+Format:
+
+```md
+---
+tags: [type/index]
+aliases: ["Teaching Workspace"]
+---
+
+# Teaching Workspace
+
+*Orientation. What each file does and how they connect.*
+
+## Root Files
+
+- `_index_.md` — this file
+- `notes.md` — learning preferences
+- `knowledge-map.md` — cross-topic connections
+
+## Topics
+
+- [[{topic}/mission.md|{topic}]] — {one-line summary}
+```
 
 ## Zone of Proximal Development
 
@@ -50,7 +81,9 @@ The core teaching principle. Always teach where the user is perfectly challenged
 
 ## Obsidian Conventions
 
-Every file has frontmatter (`tags`, `aliases`) and `[[wiki-links]]` to related concepts. Use `#topic/{name}` and `#type/{lesson|record}`.
+Every file has frontmatter (`tags`, `aliases`) and `[[wiki-links]]` to related concepts. Use `#topic/{name}` and `#type/{lesson|record|mission|references|glossary}`.
+
+**Important:** The format templates in `references/` do NOT show frontmatter in their examples — but when the agent creates the actual file, it MUST include frontmatter. The templates show only the content structure.
 
 ## Design UI
 
@@ -58,13 +91,15 @@ Lessons are single HTML files (inline CSS + SVG). Delegate to design-ui skill.
 
 ## Workflow
 
-**Setup** — detect mode, create structure, write `_index_.md`.
+**Setup** — detect mode, create `{root}/`, write `_index_.md`.
 
-**1. Mission** — write `{topic}/mission.md` via `references/MISSION-FORMAT.md`. Interview for measurable outcomes. Each topic gets its own mission.
+**1. Mission** — if the user already stated a topic, draft a provisional `{topic}/mission.md` based on what they said, then confirm/refine with them. Use `references/MISSION-FORMAT.md`. Each topic gets its own mission. Push for measurable outcomes.
 
-**2. References** — build `{topic}/references.md` via `references/REFERENCES-FORMAT.md`. Pull sources from outside (docs, articles) and inside (codebase files, design docs). Find communities (forums, subreddits, local groups) where they can ask questions and get wisdom.
+Bad: "Learn AI." Good: "Build and deploy 3 AI agents."
 
-**3. Lesson** — one HTML file in `{topic}/lessons/`. Teach → interactive practice → cite sources. Open it.
+**2. References** — build `{topic}/references.md` via `references/REFERENCES-FORMAT.md`. Pull sources from outside (docs, articles) and inside (codebase files, design docs). Optionally find communities (forums, subreddits, local groups) — only if the topic benefits from community discussion. Skip for narrow or well-documented topics.
+
+**3. Lesson** — one HTML file in `{topic}/lessons/`. Teach → interactive practice → cite sources. Create the file and tell the user its path.
 
 **4. Record** — after user engages with a lesson, write a journal entry in `{topic}/records/` via `references/RECORD-FORMAT.md`. Capture: what clicked, what didn't, improvements. This tailors the next lesson and tracks ZPD.
 

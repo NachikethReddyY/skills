@@ -5,6 +5,11 @@
 ## Template
 
 ```md
+---
+tags: [topic/{name}, type/mission]
+aliases: ["Mission: {Topic}"]
+---
+
 # Mission: {Topic}
 
 ## Why

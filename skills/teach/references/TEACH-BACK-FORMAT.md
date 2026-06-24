@@ -5,6 +5,11 @@ Teach-backs are the final exam. If the user can explain a concept at multiple de
 ## Template
 
 ```md
+---
+tags: [topic/{name}, type/teach-back]
+aliases: ["Teach-Back: {Concept}"]
+---
+
 # Teach-Back: {Concept}
 
 ## 30 Seconds
