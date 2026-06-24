@@ -1,6 +1,6 @@
 # MISSION.md Format
 
-`MISSION.md` lives at the workspace root. It captures the _reason_ the user is learning this topic and defines **measurable, observable outcomes**. Every teaching decision traces back to this document.
+`MISSION.md` lives at `{topic}/mission.md`. Each topic gets its own mission. It captures the _reason_ the user is learning this topic with **measurable, observable outcomes**.
 
 ## Template
 
@@ -8,26 +8,24 @@
 # Mission: {Topic}
 
 ## Why
-{1-3 sentences. The concrete real-world goal the user is chasing. What changes in their life or work when they have this skill? Avoid abstract framings like "to understand X" — push for the underlying outcome.}
+{1-3 sentences. The concrete real-world goal. What changes when you know this?}
 
 ## Success looks like
-- {A specific, **observable** thing the user will be able to do}
-- {Another specific, observable thing}
-- {Something the user will have built, shipped, or contributed to}
+- {A specific, observable thing the user will be able to do}
+- {Another specific thing}
+- {Something built, shipped, or contributed}
 
 ## Constraints
-- {Time, budget, prior commitments, learning preferences, anything that bounds the approach}
+- {Time, budget, prior commitments, preferences}
 
 ## Out of scope
-- {Adjacent topics the user explicitly does not want to chase right now — protects the zone of proximal development}
+- {Adjacent topics not chasing right now — protects the ZPD}
 ```
 
 ## Rules
 
-- **One mission per workspace.** If the user wants to learn two unrelated things, that is two workspaces.
-- **Concrete over abstract.** "Build and deploy 3 AI agents" beats "learn AI engineering." "Contribute to an open-source AI tooling repo" beats "understand MCP."
-- **Success must be observable.** "Understand React" is not observable. "Build a todo app with React that uses hooks, effects, and context" is.
-- **Push back on vagueness.** If the user cannot articulate why, interview them before writing anything. A bad mission is worse than no mission. Ask: "What changes in your life or work when you know this?"
-- **Every lesson answers: "How does this help achieve the mission?"** If a lesson doesn't trace back to the mission, reconsider whether to teach it.
-- **Revise when reality shifts.** Missions change. When the user's goal moves, update this file — don't leave a stale mission steering future sessions.
-- **Keep it short.** If `MISSION.md` runs past a screen, it has stopped being a compass and started being a plan.
+- **Concrete over abstract.** "Build and deploy 3 AI agents" beats "learn AI."
+- **Success must be observable.** "Understand React" is not. "Build a todo app with hooks, effects, and context" is.
+- **Push back on vagueness.** Ask: "What changes in your life or work when you know this?"
+- **Every lesson answers: how does this help achieve the mission?**
+- **Revise when reality shifts.** Don't leave a stale mission steering future sessions.
