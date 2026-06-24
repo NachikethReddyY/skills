@@ -1,6 +1,6 @@
 # Learning Record Format
 
-Learning records live in `learning-records/` and use sequential numbering: `0001-slug.md`, `0002-slug.md`, etc. Create the directory lazily — only when the first record is written.
+Learning records live in `topics/<topic>/RECORDS/` and use sequential numbering: `0001-slug.md`, `0002-slug.md`, etc. Create the directory lazily — only when the first record is written. They document demonstrated understanding and feed into the skill graph.
 
 Learning records capture demonstrated understanding and changes in the knowledge base. They feed into the skill graph (`SKILL-GRAPH.md`) and knowledge map (`KNOWLEDGE_MAP.md`), which are the canonical records of what the user knows.
 
@@ -25,7 +25,7 @@ Only include these when they add genuine value. Most records won't need them.
 
 ## Numbering
 
-Scan `learning-records/` for the highest existing number and increment by one.
+Scan `topics/<topic>/RECORDS/` for the highest existing number and increment by one.
 
 ## When to write a learning record
 

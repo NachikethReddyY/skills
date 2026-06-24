@@ -1,6 +1,6 @@
 # Review Schedule Format
 
-Reviews are retrieval-based practice sessions scheduled at increasing intervals. They convert fluency into storage strength. Review files live in `REVIEWS/YYYY-MM-DD-concept-name.md`.
+Reviews are retrieval-based practice sessions scheduled at increasing intervals. They convert fluency into storage strength. Review files live in `topics/<topic>/REVIEWS/YYYY-MM-DD-concept-name.md`.
 
 ## Schedule
 

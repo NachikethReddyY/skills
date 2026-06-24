@@ -1,6 +1,6 @@
 # Teach-Back Format
 
-Teach-backs are the final exam. If the user can explain a concept at multiple depths without notes, they truly understand it. Teach-backs live in `TEACH-BACKS/concept-name.md`.
+Teach-backs are the final exam. If the user can explain a concept at multiple depths without notes, they truly understand it. Teach-backs live in `topics/<topic>/TEACH-BACKS/concept-name.md`.
 
 ## Template
 

@@ -55,6 +55,7 @@ All paths below are relative to the **workspace root** (either current dir or `.
 ## Workspace Structure
 
 ```
+# Shared across all topics — workspace root
 MISSION.md               # the reason — concrete, measurable
 SKILL-GRAPH.md           # every concept with proficiency level
 KNOWLEDGE_MAP.md         # hierarchical map of what you know
@@ -63,13 +64,17 @@ QUESTIONS.md             # open investigations
 PATTERNS.md              # recurring patterns seen across topics
 CONNECTIONS.md           # cross-domain insights and unexpected links
 HDL.md                   # High-Level Design — consistent format across repos
-PROJECTS/                # project-first learning drivers
-LESSONS/                 # one tight concept per lesson
-CHALLENGES/              # prove-it checkpoints
-REVIEWS/                 # spaced repetition review sessions
-TEACH-BACKS/             # explain-it-from-memory artifacts
 reference/               # compressed knowledge (cheat sheets, glossaries, syntax refs)
-assets/                  # reusable components
+assets/                  # reusable widget templates — quiz, simulation, diagram HTML snippets
+
+# Per-topic — one subdirectory per subject
+topics/{topic-name}/
+├── PROJECTS/            # project-first learning drivers
+├── LESSONS/             # single-file HTML — inline CSS + inline SVGs, one concept per file
+├── CHALLENGES/          # prove-it checkpoints
+├── REVIEWS/             # spaced repetition review sessions
+├── TEACH-BACKS/         # explain-it-from-memory artifacts
+└── RECORDS/             # learning records (demonstrated understanding)
 ```
 
 All inter-document links use `[[wiki-link]]` syntax. Every document links to related concepts.
@@ -93,16 +98,18 @@ All resolved design docs are copied or symlinked into `.learn/` as `HDL.md`. Eve
 
 ## Design UI Integration
 
-When creating HTML files (lesson pages in `LESSONS/`, reference documents in `reference/`, cheat sheets), load the **design-ui** skill from this skills repo (`skills/design/design-ui/`) and follow its styling guidance.
+Every lesson is a single self-contained HTML file with **inline CSS** and **inline SVGs**. No external stylesheets, no linked assets, no separate CSS files. Open directly in a browser — no server needed.
 
-The design-ui skill provides Apple HIG-compliant typography, spacing, layout, and visual consistency. Use it to make:
-- Lesson HTML files beautiful and readable (Tufte-style)
+Always load the **design-ui** skill from this skills repo (`skills/design/design-ui/`) and delegate all styling, layout, and visual decisions to it. The design-ui skill produces inline CSS and inline SVGs appropriate for a single-file lesson.
+
+Use design-ui to make:
+- Lesson HTML files interactive and beautiful (simulations, quizzes, diagrams)
 - Reference documents print-friendly and scanable
 - Cheat sheets clean and information-dense
 
-To invoke: load the design-ui skill, then pass it the content and desired output format. The skill handles all CSS, layout, and visual design decisions.
+To invoke: load the design-ui skill, then pass it the content and desired output format. The skill handles all CSS, SVGs, and layout — inlined into a single file.
 
-Do NOT inline ad-hoc CSS or make formatting decisions yourself — always delegate to design-ui for HTML output.
+Do NOT write ad-hoc CSS, inline your own styles, or link external stylesheets — always delegate to design-ui.
 
 ## Workflow
 
@@ -110,7 +117,7 @@ Do NOT inline ad-hoc CSS or make formatting decisions yourself — always delega
 
 1. **Detect workspace mode.** Run the detection logic from Workspace Detection. If Mode B (`.learn/` inside a code repo), create `.learn/` directory at repo root. All subsequent paths are relative to the workspace root.
 2. **Resolve design documentation.** Run the Design Document Resolution search order. Copy or generate `HDL.md` into the workspace root. All HDLs follow the same format — see `references/HDL-FORMAT.md`.
-3. **Load design-ui skill.** If this session will produce HTML output, pre-load the design-ui skill from `skills/design/design-ui/` so it's available for styling.
+3. **Load design-ui skill.** Pre-load the design-ui skill from `skills/design/design-ui/`. All lesson and reference output is HTML — the skill handles all layout, typography, and styling.
 
 ### Phase 1: Foundation
 
@@ -123,21 +130,21 @@ Do NOT inline ad-hoc CSS or make formatting decisions yourself — always delega
 7. **Check confusions and questions.** Read CONFUSIONS.md and QUESTIONS.md. Prioritize unresolved confusions before introducing new material. If the user has an open question that the lesson can address, it anchors motivation.
 8. **Find connections.** Before writing, read PATTERNS.md, CONNECTIONS.md, and the knowledge map. Identify at least 3 existing concepts the new material links to. Every lesson must end with explicit `[[wiki-link]]` connections.
 9. **Design the lesson.** One tight concept. Ground it in the project or mission. Stay within working memory limits. Give one tangible win.
-10. **Check assets/ for reuse.** Read assets/. Reuse components before writing new ones.
-11. **Create the lesson.** Write to `LESSONS/NNNN-dash-case-name.md` (or `.html` if rich formatting is needed). Must include:
+10. **Check assets/ for reuse.** Read assets/ for reusable HTML widget templates (quiz, simulation, diagram snippets). When a lesson needs something reusable, add the template to assets/ and inline it into the lesson — never write it twice.
+11. **Create the lesson.** Write to `topics/{topic-name}/LESSONS/NNNN-dash-case-name.html`. Single self-contained HTML file with all CSS inlined and all diagrams as inline SVGs. No external assets — opens directly in a browser. Delegate all styling to the **design-ui skill**. Must include:
     - The concept taught
     - Citations to trusted resources
     - `## Connections` section with `[[wiki-links]]` to at least 3 existing concepts
     - `## This reminds me of...` section for loose analogies
     - A primary source recommendation
     - A prompt for follow-up questions
-    If creating HTML output, delegate styling to the **design-ui skill** — load it and pass the content for layout/typography decisions.
+    - Interactive elements (quiz, simulation, or exercise) inlined as HTML+CSS+JS
 
 ### Phase 3: Proof
 
-12. **Assign a prove-it challenge.** Write a challenge in `CHALLENGES/NNNN-name.md`. One of:
+12. **Assign a prove-it challenge.** Write a challenge in `topics/{topic-name}/CHALLENGES/NNNN-name.md`. One of:
     - Build something using the concept
-    - Explain it from memory (record in TEACH-BACKS/)
+    - Explain it from memory (record in topics/{topic-name}/TEACH-BACKS/)
     - Solve a novel problem
     - Critique a bad example
     The user must complete this before the concept is marked past "Understand" on the skill graph.
@@ -151,8 +158,8 @@ Do NOT inline ad-hoc CSS or make formatting decisions yourself — always delega
 
 ### Phase 5: Retention
 
-17. **Schedule spaced reviews.** Add entries to `REVIEWS/` at intervals: Day 1, Day 3, Day 7, Day 14, Day 30, Day 90. Each review is retrieval-based (answer from memory, never re-read).
-18. **Schedule a teach-back.** Add a teach-back challenge in `TEACH-BACKS/` for Day 7: explain the concept at 3 depths (30 seconds, 5 minutes, 15 minutes).
+17. **Schedule spaced reviews.** Add entries to `topics/{topic-name}/REVIEWS/` at intervals: Day 1, Day 3, Day 7, Day 14, Day 30, Day 90. Each review is retrieval-based (answer from memory, never re-read).
+18. **Schedule a teach-back.** Add a teach-back challenge in `topics/{topic-name}/TEACH-BACKS/` for Day 7: explain the concept at 3 depths (30 seconds, 5 minutes, 15 minutes).
 19. **Schedule knowledge compression.** Every 4-6 weeks, run a compression exercise: reduce the last 10 lessons into 1 page, then 10 bullets, then 3 principles, then 1 sentence.
 
 ### Phase 6: Maintenance
@@ -280,15 +287,17 @@ Each review is retrieval-based:
 ✅ Explain the concept without looking
 ✅ Solve a related problem
 
-Review files go in `REVIEWS/YYYY-MM-DD-concept-name.md`.
+Review files go in `topics/{topic-name}/REVIEWS/YYYY-MM-DD-concept-name.md`.
 
-## Prove-It Challenges (`CHALLENGES/`)
+## Prove-It Challenges
 
 A challenge is one of:
 - **Build**: create something using the concept
-- **Explain**: teach it from memory (record in TEACH-BACKS/)
+- **Explain**: teach it from memory (record in topics/{topic-name}/TEACH-BACKS/)
 - **Solve**: solve a novel problem using the concept
 - **Critique**: identify what's wrong with a bad example
+
+Challenges live in `topics/{topic-name}/CHALLENGES/NNNN-name.md`.
 
 Format:
 
@@ -309,7 +318,7 @@ Format:
 {Harder variant if the user breezes through}
 ```
 
-## Teach-Backs (`TEACH-BACKS/`)
+## Teach-Backs
 
 The final exam. Every major topic:
 

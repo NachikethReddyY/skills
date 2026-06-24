@@ -4,17 +4,17 @@
     {
       "id": 1,
       "prompt": "/teach me MCP for building AI agents",
-      "expected_output": "Interview for measurable mission -> write MISSION.md with concrete outcomes -> propose a project (e.g. 'Build an MCP server') -> derive knowledge gaps from project -> check CONFUSIONS.md -> create first lesson on JSON-RPC with [[wiki-links]] to at least 3 existing concepts -> assign a prove-it challenge -> update SKILL-GRAPH.md -> schedule spaced reviews -> add connection to CONNECTIONS.md"
+      "expected_output": "Detect workspace mode -> resolve DESIGN.md into HDL.md -> load design-ui skill -> interview for measurable mission -> write MISSION.md -> propose a project -> derive knowledge gaps -> check CONFUSIONS.md -> create topics/mcp/LESSONS/0001-json-rpc.html with design-ui styling, simulations, [[wiki-links]] to 3+ existing concepts -> assign challenge in topics/mcp/CHALLENGES/ -> update SKILL-GRAPH.md -> schedule reviews in topics/mcp/REVIEWS/ -> write learning record in topics/mcp/RECORDS/ -> update CONNECTIONS.md"
     },
     {
       "id": 2,
       "prompt": "What's the difference between tools and resources in MCP?",
-      "expected_output": "If user has an active teaching workspace: check CONFUSIONS.md, see if this is already tracked as a confusion. If yes, prioritize it as the next lesson. Design a short lesson that answers the question and links to [[MCP Tools]], [[MCP Resources]], [[JSON-RPC]]. Add a challenge. If no workspace exists: just answer the question concisely (don't fire teach)."
+      "expected_output": "If user has an active teaching workspace: check CONFUSIONS.md, see if this is already tracked as a confusion. If yes, prioritize it as the next lesson. Design a short HTML lesson using design-ui skill in topics/mcp/LESSONS/ that answers the question and links to [[MCP Tools]], [[MCP Resources]], [[JSON-RPC]]. Add a challenge in topics/mcp/CHALLENGES/. If no workspace exists: just answer the question concisely (don't fire teach)."
     },
     {
       "id": 3,
       "prompt": "I want to learn Rust but I already know Python and C",
-      "expected_output": "Establish mission with measurable outcomes -> check if this needs a new workspace -> set up MISSION.md, SKILL-GRAPH.md, KNOWLEDGE_MAP.md -> propose a project (e.g. 'Build a CLI tool in Rust') -> derive knowledge gaps (ownership, borrowing, lifetimes, mapped from Python GC/C pointers) -> check what the user already knows and set proficiency levels -> create first lesson with [[connections]] to Python and C knowledge -> assign challenge -> schedule reviews"
+      "expected_output": "Detect workspace mode -> resolve design docs -> load design-ui -> establish measurable mission -> set up MISSION.md, SKILL-GRAPH.md, KNOWLEDGE_MAP.md -> propose a project (e.g. 'Build a CLI tool in Rust') -> derive knowledge gaps (ownership, borrowing, lifetimes) -> create topics/rust/LESSONS/0001-ownership.html with quizzes, simulations, design-ui styling, [[connections]] to Python/C knowledge -> assign challenge in topics/rust/CHALLENGES/ -> schedule reviews -> write RECORD"
     },
     {
       "id": 4,

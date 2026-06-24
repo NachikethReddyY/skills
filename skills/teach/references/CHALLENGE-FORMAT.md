@@ -1,6 +1,6 @@
 # Challenge Format
 
-Challenges prove skill. A concept is not advanced past "Understand" until a challenge is completed. Challenges live in `CHALLENGES/NNNN-name.md`.
+Challenges prove skill. A concept is not advanced past "Understand" until a challenge is completed. Challenges live in `topics/<topic>/CHALLENGES/NNNN-name.md`.
 
 ## Template
 

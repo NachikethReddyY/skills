@@ -1,6 +1,6 @@
 # Project Format
 
-Projects drive learning. Instead of "learn topic X, then apply," the project defines the goal and lessons emerge naturally as knowledge gaps. Projects live in `PROJECTS/project-name.md`.
+Projects drive learning. Instead of "learn topic X, then apply," the project defines the goal and lessons emerge naturally as knowledge gaps. Projects live in `topics/<topic>/PROJECTS/project-name.md`.
 
 ## Template
 
