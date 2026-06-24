@@ -23,7 +23,7 @@ The user wants to learn something over multiple sessions.
 1. If `teaching/` exists → Mode A, root is `teaching/`
 2. If `learning/` exists → Mode A, root is `learning/`
 3. If `MISSION.md` exists in current dir → Mode A, root is current dir
-4. Otherwise → Mode B, create `.teach/` at repo root
+4. Otherwise → Mode B, create `.teach/` at the git root (walk up from current dir to find the repo root). If not in a git repo, use the current directory.
 
 For Mode B, also check if `.learn/` already exists (legacy name) and use it if found.
 
